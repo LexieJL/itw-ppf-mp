@@ -1,0 +1,5 @@
+.s-ph { margin-left: 12rpx; }
+.entry { border-radius: 24rpx; overflow: hidden; margin-bottom: 24rpx; }
+.entry-img { height: 300rpx; }
+.e-name { font-size: 36rpx; font-weight: 600; color: #5b1830; }
+.e-sub { font-size: 24rpx; margin-top: 10rpx; }

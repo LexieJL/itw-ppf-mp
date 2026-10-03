@@ -1,0 +1,15 @@
+<view class="breadcrumb">{{crumb}}</view>
+<view class="container {{lock ? 'blurred' : ''}}">
+  <!-- 正式版替换为 <video src="云存储地址" show-fullscreen-btn /> -->
+  <view class="card ph player">
+    <view class="ph-play">▶</view>{{v.title}}
+    <view class="fs" bindtap="fullscreen">⤢</view>
+  </view>
+  <view class="card card-pad">
+    <view class="title">{{v.title}} <text class="tag">{{v.kind}}</text></view>
+    <view class="desc">{{v.desc}}</view>
+  </view>
+</view>
+<action-bar wx:if="{{!lock}}" item="{{favItem}}" />
+<lock-mask lock="{{lock}}" />
+<float-bar bottom="{{160}}" />

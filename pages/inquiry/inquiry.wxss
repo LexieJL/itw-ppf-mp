@@ -1,0 +1,6 @@
+.tabs { display: flex; background: #fff; position: sticky; top: 0; z-index: 10; }
+.tab { flex: 1; height: 92rpx; line-height: 92rpx; text-align: center; font-size: 28rpx; color: #444; position: relative; }
+.tab.on { color: #8B0033; font-weight: 600; }
+.tab.on::after { content: ''; position: absolute; left: 30%; right: 30%; bottom: 8rpx; height: 6rpx; border-radius: 6rpx; background: #8B0033; }
+.region { display: flex; }
+.r-cell { flex: 1; font-size: 28rpx; }

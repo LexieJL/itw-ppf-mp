@@ -1,0 +1,73 @@
+<!-- 未注册（游客） -->
+<view wx:if="{{user.role === 'guest'}}" class="guest">
+  <view class="g-avatar">👤</view>
+  <view class="g-name">游客</view>
+  <view class="g-slogan">注册会员，解锁身份，查看更多专属服务</view>
+  <view class="btn-primary g-btn" bindtap="toRegister">立即注册</view>
+  <view class="steps">
+    <view class="step on"><view class="dot">1</view><view>注册会员</view></view>
+    <view class="line"></view>
+    <view class="step"><view class="dot">2</view><view>资质认证</view></view>
+    <view class="line"></view>
+    <view class="step"><view class="dot">3</view><view>解锁权益</view></view>
+  </view>
+</view>
+
+<!-- 已注册 -->
+<view wx:else class="container">
+  <view class="card profile">
+    <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onAvatar" plain>
+      <image wx:if="{{user.avatar}}" class="avatar" src="{{user.avatar}}" />
+      <view wx:else class="avatar ph-avatar">👤</view>
+      <view class="avatar-tip">点击授权头像</view>
+    </button>
+    <view class="p-info">
+      <input class="nick" type="nickname" value="{{user.nickname || user.name}}" placeholder="昵称" bindblur="onNick" />
+      <view class="role-tag">{{roleName}}<text wx:if="{{user.certStatus === 'pending'}}"> · 认证审核中</text></view>
+    </view>
+  </view>
+
+  <view class="card entries">
+    <view class="entry" bindtap="showIdentity"><view class="e-ico">♛</view><view>会员身份</view></view>
+    <view class="entry" bindtap="toFav"><view class="e-ico">★</view><view>我的收藏</view></view>
+  </view>
+
+  <view wx:if="{{user.role === 'member' && user.certStatus !== 'pending'}}" class="card upgrade" bindtap="toCertify">
+    <view>
+      <view class="up-t">申请成为认证会员</view>
+      <view class="muted">提交资质，审核通过后解锁应用详情和专属知识库</view>
+    </view>
+    <text class="up-go">去认证 ›</text>
+  </view>
+
+  <view class="card oa">
+    <view class="oa-logo">ITW</view>
+    <view class="oa-name">依工聚合<view class="muted">ITW PPF 官方公众号</view></view>
+    <view class="oa-btn" bindtap="followOA">关注</view>
+  </view>
+
+  <view class="section-title">专属知识库</view>
+  <view class="kb" wx:for="{{kbEntries}}" wx:key="name" bindtap="openKb" data-url="{{item.url}}">
+    <view class="ph kb-img">{{item.name}}</view>
+    <view class="kb-tag">{{certified ? '已解锁' : '🔒 认证会员可见'}}</view>
+  </view>
+
+  <view class="section-title">服务支持</view>
+  <view class="card consult" bindtap="toInquiry">
+    <view><view class="c-t">需求咨询</view><view class="muted">样品资料申请 · 上门申请 · 一般问询</view></view>
+    <text class="c-go">›</text>
+  </view>
+  <view class="card consult" bindtap="toDealer">
+    <view><view class="c-t">成为经销商</view><view class="muted">提交代理申请</view></view>
+    <text class="c-go">›</text>
+  </view>
+</view>
+
+<!-- 测试用：切换身份查看不同权限的界面，上线前删除 -->
+<view class="debug">
+  <view class="muted">测试：切换当前身份</view>
+  <view class="debug-roles">
+    <view wx:for="{{roles}}" wx:key="key" class="d-role {{user.role === item.key ? 'on' : ''}}" bindtap="switchRole" data-role="{{item.key}}">{{item.name}}</view>
+  </view>
+</view>
+<float-bar />

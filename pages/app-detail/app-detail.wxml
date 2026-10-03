@@ -1,0 +1,33 @@
+<view class="breadcrumb">{{crumb}}</view>
+<view class="container {{lock ? 'blurred' : ''}}">
+  <view class="card card-pad">
+    <view class="title">{{app.name}}</view>
+    <view class="desc">{{app.desc}}</view>
+  </view>
+  <view class="card ph diagram">应用图示</view>
+
+  <view class="section-title">相关推文</view>
+  <scroll-view scroll-x class="articles" enhanced show-scrollbar="{{false}}">
+    <view class="article" wx:for="{{app.articles}}" wx:key="title" bindtap="openArticle" data-url="{{item.url}}">
+      <view class="ph article-img">推文封面</view>
+      <view class="article-title">{{item.title}}</view>
+    </view>
+  </scroll-view>
+
+  <view class="section-title">应用视频</view>
+  <view class="card ph video"><view class="ph-play">▶</view>应用视频</view>
+
+  <view class="grid2 files">
+    <view class="cell file" bindtap="openSinglePage">
+      <view class="file-ico">PDF</view><view>单页</view>
+      <view class="muted">跳转专属知识库</view>
+    </view>
+    <view class="cell file" bindtap="openAch">
+      <view class="file-ico">ACH</view><view>销售用ACH源文件</view>
+      <view class="muted">跳转专属知识库</view>
+    </view>
+  </view>
+</view>
+<action-bar wx:if="{{!lock}}" item="{{favItem}}" consult="{{consultUrl}}" />
+<lock-mask lock="{{lock}}" />
+<float-bar bottom="{{160}}" />

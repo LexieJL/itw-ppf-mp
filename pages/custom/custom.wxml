@@ -1,0 +1,41 @@
+<view class="container {{lock ? 'blurred' : ''}}">
+  <block wx:for="{{blocks}}" wx:key="index" wx:for-item="b">
+    <view wx:if="{{b.type === 'image'}}" class="card ph" style="height: {{b.height || 300}}rpx" bindtap="onLink" data-link="{{b.link}}">{{b.label}}</view>
+
+    <view wx:elif="{{b.type === 'text'}}" class="card card-pad">
+      <view class="b-title">{{b.title}}</view>
+      <text class="b-body">{{b.body}}</text>
+    </view>
+
+    <view wx:elif="{{b.type === 'video'}}">
+      <view class="section-title">{{b.title}}</view>
+      <view class="card ph b-video"><view class="ph-play">▶</view>{{b.title}}</view>
+    </view>
+
+    <view wx:elif="{{b.type === 'entries'}}">
+      <view class="section-title">{{b.title}}</view>
+      <view class="entries">
+        <view class="entry" wx:for="{{b.items}}" wx:key="name" bindtap="onLink" data-link="{{item.link}}">{{item.name}}</view>
+      </view>
+    </view>
+
+    <view wx:elif="{{b.type === 'products'}}">
+      <view class="section-title">{{b.title}}</view>
+      <view class="grid2">
+        <view class="cell prod" wx:for="{{b.list}}" wx:key="id" bindtap="toProduct" data-id="{{item.id}}">
+          <view class="ph prod-img">产品缩略图</view>
+          <view class="prod-name">{{item.name}}</view>
+          <view class="muted prod-brand">{{item.brandName}} · {{item.series}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:elif="{{b.type === 'pdf'}}" class="card pdf" bindtap="toDoc" data-id="{{b.docId}}">
+      <text class="pdf-ico">PDF</text><text class="pdf-t">{{b.title}}</text><text class="pdf-go">›</text>
+    </view>
+
+    <view wx:elif="{{b.type === 'button'}}" class="btn-primary" bindtap="onLink" data-link="{{b.link}}">{{b.text}}</view>
+  </block>
+</view>
+<lock-mask lock="{{lock}}" />
+<float-bar />

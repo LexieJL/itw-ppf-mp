@@ -1,0 +1,14 @@
+<view class="breadcrumb">专属知识库 > 公司介绍 > {{a.title}}</view>
+<view class="container {{lock ? 'blurred' : ''}}">
+  <view class="card">
+    <view class="ph cover">{{a.title}}</view>
+    <view class="card-pad">
+      <view class="title">{{a.title}}</view>
+      <view class="content">{{a.content}}</view>
+      <view class="content">{{a.content}}</view>
+    </view>
+  </view>
+</view>
+<action-bar wx:if="{{!lock}}" item="{{favItem}}" />
+<lock-mask lock="{{lock}}" />
+<float-bar bottom="{{160}}" />

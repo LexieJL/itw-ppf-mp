@@ -1,0 +1,11 @@
+<view class="container {{lock ? 'blurred' : ''}}">
+  <view class="kb" wx:for="{{entries}}" wx:key="name" bindtap="open" data-url="{{item.url}}">
+    <view class="ph kb-img">
+      <view class="kb-name">{{item.name}}</view>
+      <view class="kb-sub">{{item.sub}}</view>
+    </view>
+    <view class="kb-tag">{{certified ? '已解锁' : '🔒 认证会员可见'}}</view>
+  </view>
+</view>
+<lock-mask lock="{{lock}}" />
+<float-bar />

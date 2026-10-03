@@ -1,0 +1,64 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/apps/apps",
+    "pages/products/products",
+    "pages/member/member",
+    "pages/app-detail/app-detail",
+    "pages/product-detail/product-detail",
+    "pages/register/register",
+    "pages/dealer/dealer",
+    "pages/inquiry/inquiry",
+    "pages/favorites/favorites",
+    "pages/search/search",
+    "pages/kb/kb",
+    "pages/kb-company/kb-company",
+    "pages/kb-article/kb-article",
+    "pages/kb-training/kb-training",
+    "pages/kb-list/kb-list",
+    "pages/kb-video/kb-video",
+    "pages/kb-doc/kb-doc",
+    "pages/custom/custom",
+    "pages/faq/faq",
+    "pages/webview/webview"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "ITW PPF",
+    "backgroundColor": "#f6f6f7"
+  },
+  "tabBar": {
+    "color": "#666666",
+    "selectedColor": "#8B0033",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/apps/apps",
+        "text": "应用库"
+      },
+      {
+        "pagePath": "pages/products/products",
+        "text": "产品库"
+      },
+      {
+        "pagePath": "pages/member/member",
+        "text": "会员中心"
+      }
+    ]
+  },
+  "usingComponents": {
+    "float-bar": "/components/float-bar/float-bar",
+    "lock-mask": "/components/lock-mask/lock-mask",
+    "industry-nav": "/components/industry-nav/industry-nav",
+    "action-bar": "/components/action-bar/action-bar"
+  },
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents"
+}

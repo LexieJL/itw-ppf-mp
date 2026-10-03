@@ -1,0 +1,14 @@
+<view class="breadcrumb">专属知识库 > 产品培训</view>
+<view class="{{lock ? 'blurred' : ''}}">
+  <view class="search-box" bindtap="toSearch"><text>⌕</text><text class="muted s-ph">搜索培训视频或文档</text></view>
+  <view class="container">
+    <view class="entry" wx:for="{{entries}}" wx:key="type" bindtap="open" data-type="{{item.type}}">
+      <view class="ph entry-img">
+        <view class="e-name">{{item.name}}</view>
+        <view class="e-sub">{{item.sub}}</view>
+      </view>
+    </view>
+  </view>
+</view>
+<lock-mask lock="{{lock}}" />
+<float-bar />

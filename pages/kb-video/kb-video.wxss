@@ -1,0 +1,4 @@
+.player { height: 420rpx; position: relative; }
+.fs { position: absolute; right: 20rpx; bottom: 20rpx; width: 64rpx; height: 64rpx; background: rgba(255,255,255,.85); border-radius: 12rpx; text-align: center; line-height: 64rpx; font-size: 36rpx; color: #333; }
+.title { font-size: 34rpx; font-weight: 600; margin-bottom: 12rpx; }
+.desc { font-size: 26rpx; color: #555; line-height: 1.7; }

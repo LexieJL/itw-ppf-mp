@@ -1,0 +1,5 @@
+.kb { position: relative; margin-bottom: 24rpx; border-radius: 24rpx; overflow: hidden; }
+.kb-img { height: 280rpx; }
+.kb-name { font-size: 36rpx; font-weight: 600; color: #5b1830; }
+.kb-sub { font-size: 24rpx; margin-top: 10rpx; }
+.kb-tag { position: absolute; right: 20rpx; top: 20rpx; font-size: 20rpx; background: rgba(255,255,255,.85); padding: 4rpx 14rpx; border-radius: 999rpx; }

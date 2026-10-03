@@ -1,0 +1,6 @@
+.desc-title { font-size: 30rpx; font-weight: 600; margin-bottom: 12rpx; }
+.desc { font-size: 24rpx; color: #666; line-height: 1.7; }
+.app { background: #fff; border-radius: 16rpx; overflow: hidden; }
+.app-img { height: 160rpx; font-size: 22rpx; }
+.app-name { padding: 16rpx 16rpx 4rpx; font-size: 26rpx; font-weight: 600; }
+.app-lock { padding: 0 16rpx 16rpx; font-size: 20rpx; color: #999; }

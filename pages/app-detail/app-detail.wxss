@@ -1,0 +1,12 @@
+.title { font-size: 36rpx; font-weight: 600; margin-bottom: 16rpx; }
+.desc { font-size: 26rpx; color: #555; line-height: 1.7; }
+.diagram { height: 300rpx; }
+.articles { white-space: nowrap; }
+.article { display: inline-block; width: 420rpx; margin-right: 20rpx; background: #fff; border-radius: 16rpx; overflow: hidden; vertical-align: top; }
+.article-img { height: 200rpx; font-size: 22rpx; }
+.article-title { padding: 16rpx; font-size: 24rpx; white-space: normal; line-height: 1.5; height: 72rpx; overflow: hidden; }
+.video { height: 380rpx; }
+.files { margin-top: 24rpx; }
+.file { background: #fff; border-radius: 16rpx; padding: 28rpx 24rpx; box-sizing: border-box; font-size: 28rpx; font-weight: 600; }
+.file-ico { display: inline-block; font-size: 20rpx; color: #fff; background: #8B0033; border-radius: 8rpx; padding: 4rpx 12rpx; margin-bottom: 12rpx; }
+.file .muted { font-weight: normal; margin-top: 6rpx; }

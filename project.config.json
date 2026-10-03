@@ -1,0 +1,14 @@
+{
+  "description": "ITW PPF 小程序前端（原生，测试数据）",
+  "appid": "touristappid",
+  "projectname": "itw-ppf-miniprogram",
+  "compileType": "miniprogram",
+  "libVersion": "3.4.0",
+  "setting": {
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "urlCheck": false
+  }
+}

@@ -1,0 +1,57 @@
+<view class="{{lock ? 'blurred' : ''}}">
+  <view class="search-box">
+    <text>⌕</text>
+    <input placeholder="搜索产品名称、代码或系列" value="{{keyword}}" bindinput="onInput" confirm-type="search" />
+  </view>
+  <view wx:if="{{keyword}}" class="result">
+    <view class="muted result-tip">“{{keyword}}” 共 {{results.length}} 个产品</view>
+    <view class="grid2">
+      <view class="cell prod" wx:for="{{results}}" wx:key="id" bindtap="toDetail" data-id="{{item.id}}">
+        <view class="ph prod-img">产品图</view>
+        <view class="prod-name">{{item.name}}</view>
+        <view class="muted prod-code">{{item.brandName}} · {{item.series}}</view>
+      </view>
+    </view>
+  </view>
+  <block wx:else>
+    <view class="top">
+      <view class="corner">品牌</view>
+      <scroll-view scroll-x class="series" enable-flex>
+        <view wx:for="{{series}}" wx:key="*this" class="cat {{seriesIndex === index ? 'on' : ''}}" bindtap="onSeries" data-i="{{index}}">{{item}}</view>
+        <view wx:if="{{!series.length}}" class="cat muted">暂无产品</view>
+      </scroll-view>
+    </view>
+    <view class="body">
+      <scroll-view scroll-y class="left">
+        <view wx:for="{{brands}}" wx:key="id" class="brand {{brandIndex === index ? 'on' : ''}}" bindtap="onBrand" data-i="{{index}}">
+          <view class="brand-en">{{item.name}}</view>
+          <view wx:if="{{item.cn}}" class="brand-cn">{{item.cn}}</view>
+        </view>
+      </scroll-view>
+      <view class="main">
+        <view class="card brand-card" bindtap="toggleIntro">
+          <view class="brand-head">
+            <image wx:if="{{brand.logo}}" class="logo" src="{{brand.logo}}" mode="aspectFit" />
+            <view wx:else class="ph logo">{{brand.name}}</view>
+            <view class="brand-t">
+              <view class="brand-name">{{brand.name}} <text wx:if="{{brand.cn}}">{{brand.cn}}</text></view>
+              <view class="muted">{{brand.count}} 个产品</view>
+            </view>
+          </view>
+          <view wx:if="{{brand.intro}}" class="brand-intro {{introOpen ? 'open' : ''}}">{{brand.intro}}</view>
+          <view wx:if="{{brand.intro}}" class="more">{{introOpen ? '收起' : '展开品牌介绍'}}</view>
+          <view wx:else class="muted brand-intro">品牌介绍待补充</view>
+        </view>
+        <view class="grid2">
+          <view class="cell prod" wx:for="{{list}}" wx:key="id" bindtap="toDetail" data-id="{{item.id}}">
+            <view class="ph prod-img">产品图</view>
+            <view class="prod-name">{{item.name}}</view>
+            <view class="muted prod-code">{{item.series}} · {{item.skus.length}} 个规格</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>
+<lock-mask lock="{{lock}}" />
+<float-bar />

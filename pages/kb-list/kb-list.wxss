@@ -1,0 +1,6 @@
+.item { background: #fff; border-radius: 16rpx; overflow: hidden; }
+.item-img { height: 180rpx; }
+.small { width: 64rpx; height: 64rpx; font-size: 26rpx; margin: 0; }
+.doc-type { font-size: 32rpx; font-weight: 600; }
+.item-t { padding: 14rpx 16rpx 0; font-size: 24rpx; font-weight: 600; }
+.item-s { padding: 4rpx 16rpx 16rpx; font-size: 20rpx; }

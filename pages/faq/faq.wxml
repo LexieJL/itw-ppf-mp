@@ -1,0 +1,42 @@
+<view class="{{lock ? 'blurred' : ''}}">
+  <view class="search-box">
+    <text>⌕</text><input placeholder="输入关键词搜索问题" value="{{keyword}}" bindinput="onInput" confirm-type="search" />
+  </view>
+  <scroll-view scroll-x class="cats" enhanced show-scrollbar="{{false}}">
+    <view wx:for="{{cats}}" wx:key="*this" class="cat {{cat === item ? 'on' : ''}}" bindtap="pickCat" data-c="{{item}}">{{item}}</view>
+  </scroll-view>
+  <view class="container">
+    <view class="card qa" wx:for="{{list}}" wx:key="id" bindtap="toggle" data-id="{{item.id}}">
+      <view class="q"><text class="q-mark">Q</text><text class="q-t">{{item.q}}</text><text class="arrow">{{open[item.id] ? '−' : '+'}}</text></view>
+      <view wx:if="{{open[item.id]}}" class="a"><text class="a-mark">A</text><text>{{item.a}}</text></view>
+      <view class="muted q-cat">{{item.category}}</view>
+    </view>
+    <view wx:if="{{!list.length}}" class="empty">没有找到相关问题，可以点下方“我要提问”</view>
+  </view>
+</view>
+<view wx:if="{{!lock}}" class="ask-bar"><view class="btn-primary ask" bindtap="openAsk">我要提问</view></view>
+
+<view wx:if="{{asking}}" class="sheet-mask" bindtap="closeAsk">
+  <view class="sheet" catchtap="noop">
+    <view class="sheet-t">我要提问</view>
+    <view class="form">
+      <view class="form-row">
+        <view class="form-label">问题分类<text class="req">*</text></view>
+        <picker range="{{askCats}}" bindchange="onAskCat">
+          <view class="{{askCat > -1 ? 'picker-val' : 'picker-ph'}}">{{askCat > -1 ? askCats[askCat] : '-请选择-'}}</view>
+        </picker>
+      </view>
+      <view class="form-row">
+        <view class="form-label">问题描述<text class="req">*</text></view>
+        <textarea placeholder="请描述您的问题" value="{{askText}}" bindinput="onAskText" />
+      </view>
+      <view class="form-row">
+        <view class="form-label">图片</view>
+        <view class="pick-img" bindtap="pickImage">{{askImage ? '已选择 1 张，点击更换' : '+ 上传图片（选填）'}}</view>
+      </view>
+    </view>
+    <view class="btn-primary" bindtap="submitAsk">提交</view>
+  </view>
+</view>
+<lock-mask lock="{{lock}}" />
+<float-bar bottom="{{180}}" />

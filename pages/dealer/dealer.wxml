@@ -1,0 +1,19 @@
+<view class="container">
+  <view class="card policy">
+    <view class="ph policy-img">经销商政策</view>
+    <view class="card-pad">
+      <view class="p-t">经销商政策</view>
+      <view class="p-d">合作区域、代理品牌、支持政策与考核要求等内容由运营人员在后台编辑（测试内容）。</view>
+    </view>
+  </view>
+  <view class="section-title">成为经销商申请</view>
+  <view class="form">
+    <view class="form-row" wx:for="{{fields}}" wx:key="key">
+      <view class="form-label">{{item.label}}<text wx:if="{{item.required}}" class="req">*</text></view>
+      <textarea wx:if="{{item.multiline}}" auto-height placeholder="{{item.placeholder}}" value="{{form[item.key]}}" bindinput="onInput" data-key="{{item.key}}" />
+      <input wx:else placeholder="{{item.placeholder}}" value="{{form[item.key]}}" bindinput="onInput" data-key="{{item.key}}" />
+    </view>
+  </view>
+  <view class="btn-primary" bindtap="submit">提交申请</view>
+</view>
+<float-bar />

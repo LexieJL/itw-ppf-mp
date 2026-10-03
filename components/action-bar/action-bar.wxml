@@ -1,0 +1,9 @@
+<view class="bar">
+  <view class="act" bindtap="toggleFav">
+    <text class="ico {{faved ? 'on' : ''}}">{{faved ? '★' : '☆'}}</text><text class="lbl">收藏</text>
+  </view>
+  <button class="act share" open-type="share" plain>
+    <text class="ico">⇪</text><text class="lbl">转发</text>
+  </button>
+  <view wx:if="{{consult}}" class="consult" bindtap="toConsult">需求咨询</view>
+</view>

@@ -1,0 +1,17 @@
+<view class="breadcrumb">专属知识库 > 产品培训 > {{type === 'video' ? '视频' : '文档'}}</view>
+<view class="{{lock ? 'blurred' : ''}}">
+  <industry-nav industries="{{industries}}" indIndex="{{indIndex}}" subIndex="{{subIndex}}" bind:change="onNav">
+    <view class="grid2">
+      <view class="cell item" wx:for="{{items}}" wx:key="id" bindtap="open" data-id="{{item.id}}">
+        <view class="ph item-img">
+          <view wx:if="{{type === 'video'}}" class="ph-play small">▶</view>
+          <text wx:else class="doc-type">{{item.docType}}</text>
+        </view>
+        <view class="item-t">{{type === 'video' ? item.title : item.title}}</view>
+        <view class="muted item-s">{{type === 'video' ? item.kind : (item.subId ? 'PDF · ' + item.pages + '页' : 'PDF · 行业通用')}}</view>
+      </view>
+    </view>
+  </industry-nav>
+</view>
+<lock-mask lock="{{lock}}" />
+<float-bar />

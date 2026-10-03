@@ -1,0 +1,34 @@
+<view class="container">
+  <view class="avatar">👤</view>
+  <view class="roles">
+    <view wx:for="{{roles}}" wx:key="key" class="role {{role === item.key ? 'on' : ''}}" bindtap="pickRole" data-role="{{item.key}}">{{item.name}}</view>
+  </view>
+  <view class="tip" wx:if="{{tips[role]}}">{{tips[role]}}</view>
+
+  <view class="form">
+    <view class="form-row" wx:for="{{fields}}" wx:key="key">
+      <view class="form-label">{{item.label}}<text wx:if="{{item.required && !allowEmpty}}" class="req">*</text></view>
+
+      <block wx:if="{{item.type === 'industries'}}">
+        <view class="chips">
+          <view wx:for="{{industries}}" wx:for-item="ind" wx:key="id" class="chip {{form.industries[ind.name] ? 'on' : ''}}"
+            bindtap="toggleIndustry" data-name="{{ind.name}}">{{ind.name}}</view>
+        </view>
+      </block>
+      <block wx:elif="{{item.type === 'radio'}}">
+        <radio-group class="radios" bindchange="onRadio" data-key="{{item.key}}">
+          <label class="radio"><radio value="是" color="#8B0033" checked="{{form[item.key] === '是'}}" />是</label>
+          <label class="radio"><radio value="否" color="#8B0033" checked="{{form[item.key] === '否'}}" />否</label>
+        </radio-group>
+      </block>
+      <block wx:else>
+        <input placeholder="{{item.placeholder || '请输入' + item.label}}" value="{{form[item.key]}}"
+          type="{{item.type === 'phone' || item.type === 'code' ? 'number' : 'text'}}" bindinput="onInput" data-key="{{item.key}}" />
+        <view wx:if="{{item.type === 'code'}}" class="code-btn" bindtap="sendCode" data-target="{{item.target}}">{{countdown ? countdown + 's' : '获取验证码'}}</view>
+      </block>
+    </view>
+  </view>
+
+  <view class="btn-primary" bindtap="submit">完成注册</view>
+  <view class="muted foot">测试阶段所有字段都可以留空直接提交</view>
+</view>

@@ -1,0 +1,4 @@
+.policy-img { height: 300rpx; font-size: 30rpx; }
+.p-t { font-size: 30rpx; font-weight: 600; margin-bottom: 10rpx; }
+.p-d { font-size: 24rpx; color: #666; line-height: 1.7; }
+.form-row textarea { min-height: 96rpx; padding: 28rpx 0; }

@@ -1,0 +1,4 @@
+<view class="float" style="bottom: {{bottom}}rpx">
+  <view class="fbtn" bindtap="toSearch"><text class="ico">⌕</text><text class="lbl">搜索</text></view>
+  <view class="fbtn" bindtap="toFav"><text class="ico">☆</text><text class="lbl">收藏</text></view>
+</view>

@@ -1,0 +1,15 @@
+<view class="breadcrumb">{{crumb}}</view>
+<view class="container {{lock ? 'blurred' : ''}}">
+  <view class="viewer">
+    <view class="page" wx:for="{{pages}}" wx:key="*this">
+      <view class="page-h">{{d.title}}</view>
+      <view class="line" wx:for="{{[1,2,3,4,5,6]}}" wx:for-item="l" wx:key="*this"></view>
+      <view class="page-n">{{item}} / {{pages.length}}</view>
+    </view>
+    <view class="fs" bindtap="openPdf">⤢</view>
+  </view>
+  <view class="muted hint">点击右上角按钮可全屏查看 PDF</view>
+</view>
+<action-bar wx:if="{{!lock}}" item="{{favItem}}" />
+<lock-mask lock="{{lock}}" />
+<float-bar bottom="{{160}}" />

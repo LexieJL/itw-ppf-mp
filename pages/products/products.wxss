@@ -1,0 +1,27 @@
+.top { display: flex; background: #fff; border-bottom: 1rpx solid #eee; }
+.corner { width: 160rpx; display: flex; align-items: center; justify-content: center; font-size: 22rpx; color: #999; background: #f3f3f4; }
+.series { flex: 1; min-width: 0; white-space: nowrap; display: flex; }
+.cat { display: inline-block; flex-shrink: 0; height: 88rpx; line-height: 88rpx; padding: 0 24rpx; font-size: 26rpx; color: #444; position: relative; }
+.cat.on { color: #8B0033; font-weight: 600; }
+.cat.on::after { content: ''; position: absolute; left: 30%; right: 30%; bottom: 10rpx; height: 6rpx; border-radius: 6rpx; background: #8B0033; }
+.body { display: flex; align-items: flex-start; }
+.left { width: 160rpx; flex-shrink: 0; background: #f3f3f4; height: calc(100vh - 200rpx); position: sticky; top: 0; }
+.brand { min-height: 108rpx; padding: 16rpx 8rpx; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-size: 24rpx; color: #444; position: relative; word-break: break-all; }
+.brand-cn { font-size: 20rpx; color: #999; margin-top: 4rpx; }
+.brand.on .brand-cn { color: #8B0033; }
+.brand.on { background: #fff; color: #8B0033; font-weight: 600; }
+.brand.on::before { content: ''; position: absolute; left: 0; top: 28rpx; bottom: 28rpx; width: 8rpx; border-radius: 0 6rpx 6rpx 0; background: #8B0033; }
+.main { flex: 1; min-width: 0; padding: 24rpx 24rpx 240rpx; }
+.result { padding: 0 32rpx 240rpx; }
+.result-tip { margin-bottom: 16rpx; }
+.prod { background: #fff; border-radius: 16rpx; overflow: hidden; }
+.prod-img { height: 180rpx; font-size: 22rpx; }
+.prod-name { padding: 14rpx 16rpx 0; font-size: 24rpx; font-weight: 600; line-height: 1.4; }
+.prod-code { padding: 4rpx 16rpx 16rpx; font-size: 20rpx; }
+.brand-card { padding: 24rpx; margin-bottom: 24rpx; }
+.brand-head { display: flex; align-items: center; }
+.logo { width: 160rpx; height: 72rpx; flex-shrink: 0; margin-right: 20rpx; font-size: 20rpx; }
+.brand-name { font-size: 28rpx; font-weight: 600; margin-bottom: 4rpx; }
+.brand-intro { margin-top: 16rpx; font-size: 24rpx; color: #555; line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-wrap; }
+.brand-intro.open { display: block; }
+.more { margin-top: 8rpx; font-size: 22rpx; color: #8B0033; text-align: right; }

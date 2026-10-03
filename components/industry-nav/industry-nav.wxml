@@ -1,0 +1,16 @@
+<view class="inav">
+  <view class="top">
+    <view class="corner">{{industries[indIndex].name}}</view>
+    <scroll-view scroll-x class="subs" enhanced show-scrollbar="{{false}}">
+      <view wx:for="{{industries[indIndex].subs}}" wx:key="id" wx:for-index="i"
+        class="sub {{subIndex === i ? 'on' : ''}}" bindtap="onSub" data-i="{{i}}">{{item.name}}</view>
+    </scroll-view>
+  </view>
+  <view class="body">
+    <view class="left">
+      <view wx:for="{{industries}}" wx:key="id" wx:for-index="i"
+        class="ind {{indIndex === i ? 'on' : ''}}" bindtap="onInd" data-i="{{i}}">{{item.name}}</view>
+    </view>
+    <view class="main"><slot></slot></view>
+  </view>
+</view>

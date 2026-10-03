@@ -1,0 +1,14 @@
+.top { display: flex; background: #fff; border-bottom: 1rpx solid #eee; position: sticky; top: 0; z-index: 10; }
+.corner { width: 160rpx; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 22rpx; color: #999; background: #f3f3f4; }
+.subs { flex: 1; white-space: nowrap; }
+.sub { display: inline-block; padding: 0 28rpx; height: 88rpx; line-height: 88rpx; font-size: 26rpx; color: #444; position: relative; }
+.sub.on { color: #8B0033; font-weight: 600; }
+.sub.on::after { content: ''; position: absolute; left: 28rpx; right: 28rpx; bottom: 10rpx; height: 6rpx; border-radius: 6rpx; background: #8B0033; }
+.body { display: flex; align-items: flex-start; }
+.left { width: 160rpx; flex-shrink: 0; background: #f3f3f4; min-height: 100vh; }
+.ind { height: 108rpx; display: flex; align-items: center; justify-content: center; font-size: 28rpx; color: #444;
+  text-align: center; padding: 0 12rpx; position: relative; }
+.ind.on { background: #fff; color: #8B0033; font-weight: 600; }
+.ind.on::before { content: ''; position: absolute; left: 0; top: 28rpx; bottom: 28rpx; width: 8rpx; border-radius: 0 6rpx 6rpx 0; background: #8B0033; }
+.main { flex: 1; min-width: 0; padding: 24rpx 24rpx 240rpx; }

@@ -1,0 +1,45 @@
+<view class="breadcrumb">{{crumb}}</view>
+<view class="container {{lock ? 'blurred' : ''}}">
+  <!-- 产品图：表里给的是文件名（如 30000.jpg），图片由 ITW 另行提供后上传到云存储 -->
+  <view class="card ph pic">产品图 {{p.skus[0].img}}</view>
+  <view class="card card-pad">
+    <view class="brand-row">
+      <image wx:if="{{b.logo}}" class="logo" src="{{b.logo}}" mode="aspectFit" />
+      <text class="muted">{{b.name}} {{b.cn}} · {{p.series}}</text>
+      <text wx:if="{{p.isNew}}" class="tag new">新品</text>
+    </view>
+    <view class="title">{{p.name}}</view>
+    <view class="sub-t">产品概述</view>
+    <view class="desc">{{p.intro || '待补充'}}</view>
+    <block wx:if="{{p.usage}}">
+      <view class="sub-t">使用方法和用途</view>
+      <view class="desc">{{p.usage}}</view>
+    </block>
+  </view>
+  <view class="card card-pad">
+    <view class="sub-t first">代码与规格</view>
+    <view class="spec spec-h"><text class="spec-k">产品代码</text><text class="spec-v">包装规格</text></view>
+    <view class="spec" wx:for="{{p.skus}}" wx:key="index">
+      <text class="spec-k">{{item.code || '-'}}</text><text class="spec-v">{{item.size || '-'}}</text>
+    </view>
+  </view>
+  <view class="card card-pad">
+    <view class="sub-t first">适用市场与领域</view>
+    <view class="tags">
+      <text class="tag mk" wx:for="{{p.markets}}" wx:key="*this">{{item}}</text>
+      <text class="tag" wx:for="{{p.fields}}" wx:key="*this">{{item}}</text>
+    </view>
+  </view>
+  <view class="section-title">产品视频</view>
+  <view class="card ph video"><view class="ph-play">▶</view>产品视频</view>
+  <view class="card consult" bindtap="toConsult">
+    <view>
+      <view class="consult-t">需求咨询</view>
+      <view class="muted">申请样品资料、预约上门或一般问询</view>
+    </view>
+    <text class="consult-go">›</text>
+  </view>
+</view>
+<action-bar wx:if="{{!lock}}" item="{{favItem}}" consult="{{consultUrl}}" />
+<lock-mask lock="{{lock}}" />
+<float-bar bottom="{{160}}" />

@@ -1,0 +1,17 @@
+<view class="{{lock ? 'blurred' : ''}}">
+  <industry-nav industries="{{industries}}" indIndex="{{indIndex}}" subIndex="{{subIndex}}" bind:change="onNav">
+    <view class="card card-pad">
+      <view class="desc-title">{{industries[indIndex].name}} · {{sub.name}}</view>
+      <view class="desc">{{sub.desc}}</view>
+    </view>
+    <view class="grid2">
+      <view class="cell app" wx:for="{{apps}}" wx:key="id" bindtap="toDetail" data-id="{{item.id}}">
+        <view class="ph app-img">应用图示</view>
+        <view class="app-name">{{item.name}}</view>
+        <view class="app-lock" wx:if="{{!certified}}">🔒 认证可见详情</view>
+      </view>
+    </view>
+  </industry-nav>
+</view>
+<lock-mask lock="{{lock}}" />
+<float-bar />

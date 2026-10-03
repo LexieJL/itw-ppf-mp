@@ -1,0 +1,22 @@
+.pic { height: 520rpx; }
+.title { font-size: 34rpx; font-weight: 600; margin-bottom: 12rpx; }
+.desc { font-size: 26rpx; color: #555; line-height: 1.7; }
+.specs { margin-top: 24rpx; border-top: 1rpx solid #f0f0f0; }
+.spec { display: flex; padding: 18rpx 0; border-bottom: 1rpx solid #f5f5f5; font-size: 26rpx; }
+.spec-k { width: 200rpx; color: #888; }
+.spec-v { flex: 1; }
+.video { height: 380rpx; }
+.consult { display: flex; align-items: center; justify-content: space-between; padding: 32rpx 28rpx; }
+.consult-t { font-size: 30rpx; font-weight: 600; color: #8B0033; margin-bottom: 6rpx; }
+.consult-go { font-size: 48rpx; color: #8B0033; }
+.brand-row { display: flex; align-items: center; margin-bottom: 12rpx; font-size: 24rpx; }
+.logo { width: 120rpx; height: 48rpx; margin-right: 16rpx; }
+.sub-t { font-size: 26rpx; font-weight: 600; margin: 24rpx 0 8rpx; }
+.sub-t.first { margin-top: 0; }
+.desc { white-space: pre-wrap; }
+.spec-h { color: #999; font-size: 22rpx; }
+.spec-k { width: 50%; }
+.tags { display: flex; flex-wrap: wrap; }
+.tag { font-size: 22rpx; padding: 6rpx 18rpx; border-radius: 999rpx; background: #f3f3f4; color: #555; margin: 0 12rpx 12rpx 0; }
+.tag.mk { background: #f8e8ee; color: #8B0033; }
+.tag.new { background: #8B0033; color: #fff; margin: 0 0 0 12rpx; }

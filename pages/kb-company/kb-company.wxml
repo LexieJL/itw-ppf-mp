@@ -1,0 +1,11 @@
+<view class="breadcrumb">专属知识库 > 公司介绍</view>
+<view class="container {{lock ? 'blurred' : ''}}">
+  <view class="grid2">
+    <view class="cell item" wx:for="{{list}}" wx:key="id" bindtap="open" data-id="{{item.id}}">
+      <view class="ph item-img">{{item.title}}</view>
+      <view class="item-t">{{item.summary}}</view>
+    </view>
+  </view>
+</view>
+<lock-mask lock="{{lock}}" />
+<float-bar />

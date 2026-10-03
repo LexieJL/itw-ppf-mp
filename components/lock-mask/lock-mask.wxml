@@ -1,0 +1,8 @@
+<view wx:if="{{lock}}" class="mask" bindtap="onMask" catchtouchmove="noop">
+  <view class="dialog" catchtap="noop">
+    <view class="icon">🔒</view>
+    <view class="text">{{lock.pre}}<text class="link" bindtap="go">{{lock.link}}</text>{{lock.post}}</view>
+    <view class="btn" bindtap="go">{{lock.link === '注册' ? '立即注册' : '前往' + lock.link}}</view>
+    <view wx:if="{{closable}}" class="later" bindtap="close">暂不</view>
+  </view>
+</view>

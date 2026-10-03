@@ -1,0 +1,22 @@
+<view class="search-box">
+  <text>⌕</text>
+  <input focus placeholder="搜索应用、产品、视频、文档" value="{{keyword}}" bindinput="onInput" confirm-type="search" />
+</view>
+<view class="container">
+  <block wx:if="{{!keyword}}">
+    <view class="section-title">热门搜索</view>
+    <view class="hots">
+      <view wx:for="{{hots}}" wx:key="*this" class="hot" bindtap="useHot" data-k="{{item}}">{{item}}</view>
+    </view>
+  </block>
+  <block wx:else>
+    <view wx:for="{{groups}}" wx:key="name" wx:if="{{item.list.length}}">
+      <view class="section-title">{{item.name}} <text class="muted">{{item.list.length}}</text></view>
+      <view wx:for="{{item.list}}" wx:for-item="r" wx:key="url" class="card row" bindtap="open" data-url="{{r.url}}">
+        <view class="t">{{r.title}}</view>
+        <view class="muted">{{r.sub}}<text wx:if="{{r.locked}}"> · 🔒</text></view>
+      </view>
+    </view>
+    <view wx:if="{{total === 0}}" class="empty">没有找到“{{keyword}}”相关内容</view>
+  </block>
+</view>

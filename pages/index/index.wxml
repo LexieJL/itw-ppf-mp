@@ -1,0 +1,30 @@
+<view class="{{lock ? 'blurred' : ''}}">
+  <swiper class="banner" indicator-dots autoplay circular interval="4000"
+    indicator-color="rgba(255,255,255,.45)" indicator-active-color="#fff">
+    <swiper-item wx:for="{{banners}}" wx:key="id">
+      <view class="slide" style="background: {{item.bg}}" bindtap="onBanner" data-i="{{index}}">
+        <view class="deco1"></view><view class="deco2"></view>
+        <text class="slide-tag">{{item.link.type === 'article' ? '公众号推文' : '活动专题'}}</text>
+        <text class="slide-title">{{item.title}}</text>
+        <text class="slide-sub">{{item.sub}} ›</text>
+      </view>
+    </swiper-item>
+  </swiper>
+
+  <view class="notice" wx:if="{{role === 'guest'}}" bindtap="toRegister">
+    <text>注册会员，解锁全部专属服务</text><text class="notice-go">去注册</text>
+  </view>
+
+  <view class="modules">
+    <view class="module" wx:for="{{modules}}" wx:key="key" bindtap="onModule" data-i="{{index}}">
+      <view class="m-deco" style="background: {{item.tint}}"></view>
+      <view class="m-icon" style="background: {{item.tint}}"><image src="/images/icons/{{item.icon}}.svg" /></view>
+      <view class="m-name">{{item.name}}</view>
+      <view class="m-sub">{{item.sub}}</view>
+      <view wx:if="{{item.badge}}" class="m-badge {{item.badgeType}}">{{item.badge}}</view>
+      <view wx:elif="{{item.locked}}" class="m-badge"><image src="/images/icons/lock.svg" />注册</view>
+    </view>
+  </view>
+</view>
+<lock-mask lock="{{lock}}" closable bind:close="closeLock" />
+<float-bar />

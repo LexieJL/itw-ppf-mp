@@ -1,0 +1,33 @@
+<view class="tabs">
+  <view wx:for="{{tabs}}" wx:key="key" class="tab {{tab === index ? 'on' : ''}}" bindtap="pickTab" data-i="{{index}}">{{item.name}}</view>
+</view>
+<view class="container">
+  <view class="form">
+    <view class="form-row" wx:for="{{fields}}" wx:key="key">
+      <view class="form-label">{{item.label}}<text wx:if="{{item.required}}" class="req">*</text></view>
+
+      <picker wx:if="{{item.type === 'product'}}" range="{{productNames}}" bindchange="onPick" data-key="product">
+        <view class="{{form.product > -1 ? 'picker-val' : 'picker-ph'}}">{{form.product > -1 ? productNames[form.product] : '-请选择-'}}</view>
+      </picker>
+      <picker wx:elif="{{item.type === 'app'}}" range="{{appNames}}" bindchange="onPick" data-key="app">
+        <view class="{{form.app > -1 ? 'picker-val' : 'picker-ph'}}">{{form.app > -1 ? appNames[form.app] : '-请选择-'}}</view>
+      </picker>
+      <picker wx:elif="{{item.type === 'region'}}" mode="region" bindchange="onRegion">
+        <view class="region">
+          <view class="r-cell {{form.region ? '' : 'picker-ph'}}">{{form.region ? form.region[0] : '省份'}}</view>
+          <view class="r-cell {{form.region ? '' : 'picker-ph'}}">{{form.region ? form.region[1] : '城市'}}</view>
+          <view class="r-cell {{form.region ? '' : 'picker-ph'}}">{{form.region ? form.region[2] : '区县'}}</view>
+        </view>
+      </picker>
+      <textarea wx:elif="{{item.type === 'textarea'}}" placeholder="{{item.placeholder}}" value="{{form[item.key]}}" bindinput="onInput" data-key="{{item.key}}" />
+      <input wx:else placeholder="{{item.placeholder || '请输入'}}" value="{{form[item.key]}}" bindinput="onInput" data-key="{{item.key}}" />
+    </view>
+  </view>
+
+  <checkbox-group bindchange="onCheck">
+    <label class="check-row"><checkbox value="marketing" color="#8B0033" checked="{{form.marketing}}" />我愿意接收产品和服务相关的信息</label>
+    <label class="check-row"><checkbox value="agree" color="#8B0033" checked="{{form.agree}}" />我同意<text class="link" catchtap="showTerms">使用条例和隐私权声明</text></label>
+  </checkbox-group>
+  <view class="btn-primary" bindtap="submit">提交</view>
+</view>
+<float-bar />
