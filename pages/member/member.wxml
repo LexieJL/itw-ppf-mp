@@ -14,7 +14,7 @@
 </view>
 
 <!-- 已注册 -->
-<view wx:else class="container">
+<view wx:else class="container member-main">
   <view class="card profile">
     <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onAvatar" plain>
       <image wx:if="{{user.avatar}}" class="avatar" src="{{user.avatar}}" />
@@ -41,7 +41,7 @@
   </view>
 
   <view class="card oa">
-    <view class="oa-logo">ITW</view>
+    <image class="oa-logo" src="/images/itw-logo.png" mode="aspectFit" />
     <view class="oa-name">依工聚合<view class="muted">ITW PPF 官方公众号</view></view>
     <view class="oa-btn" bindtap="followOA">关注</view>
   </view>
@@ -60,6 +60,18 @@
   <view class="card consult" bindtap="toDealer">
     <view><view class="c-t">成为经销商</view><view class="muted">提交代理申请</view></view>
     <text class="c-go">›</text>
+  </view>
+</view>
+
+<!-- 关于 ITW：官网、招聘（链接在 utils/cms.js 的 ABOUT） -->
+<view class="container about">
+  <view class="section-title">关于 ITW</view>
+  <view class="card about-card">
+    <image class="about-logo" src="/images/itw-logo.png" mode="aspectFit" />
+    <view class="about-row" wx:for="{{about}}" wx:key="name" bindtap="openAbout" data-i="{{index}}">
+      <view><view class="c-t">{{item.name}}</view><view class="muted">{{item.sub}}</view></view>
+      <text class="c-go">›</text>
+    </view>
   </view>
 </view>
 

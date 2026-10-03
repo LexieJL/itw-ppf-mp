@@ -1,5 +1,5 @@
 <view class="container">
-  <view class="avatar">👤</view>
+  <image class="brand-logo" src="/images/itw-logo.png" mode="aspectFit" />
   <view class="roles">
     <view wx:for="{{roles}}" wx:key="key" class="role {{role === item.key ? 'on' : ''}}" bindtap="pickRole" data-role="{{item.key}}">{{item.name}}</view>
   </view>
@@ -17,8 +17,8 @@
       </block>
       <block wx:elif="{{item.type === 'radio'}}">
         <radio-group class="radios" bindchange="onRadio" data-key="{{item.key}}">
-          <label class="radio"><radio value="是" color="#8B0033" checked="{{form[item.key] === '是'}}" />是</label>
-          <label class="radio"><radio value="否" color="#8B0033" checked="{{form[item.key] === '否'}}" />否</label>
+          <label class="radio"><radio value="是" color="#8A1538" checked="{{form[item.key] === '是'}}" />是</label>
+          <label class="radio"><radio value="否" color="#8A1538" checked="{{form[item.key] === '否'}}" />否</label>
         </radio-group>
       </block>
       <block wx:else>

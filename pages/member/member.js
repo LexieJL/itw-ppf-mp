@@ -1,8 +1,10 @@
 const auth = require('../../utils/auth')
+const cms = require('../../utils/cms')
+const link = require('../../utils/link')
 
 Page({
   data: {
-    user: { role: 'guest' }, roleName: '', certified: false,
+    user: { role: 'guest' }, roleName: '', certified: false, about: cms.ABOUT,
     kbEntries: [
       { name: '公司介绍', url: '/pages/kb-company/kb-company' },
       { name: '产品培训', url: '/pages/kb-training/kb-training' }
@@ -30,6 +32,7 @@ Page({
     // 正式版使用 <official-account> 组件（仅在扫码等特定场景显示），或引导到公众号文章关注
     wx.showToast({ title: '前往关注“依工聚合”公众号', icon: 'none' })
   },
+  openAbout(e) { link.open(this.data.about[e.currentTarget.dataset.i].link) },
   openKb(e) { wx.navigateTo({ url: e.currentTarget.dataset.url }) },
   toRegister() { wx.navigateTo({ url: '/pages/register/register?role=member' }) },
   toCertify() { wx.navigateTo({ url: '/pages/register/register?role=certified' }) },

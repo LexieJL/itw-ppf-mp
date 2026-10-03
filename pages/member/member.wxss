@@ -1,5 +1,5 @@
 .guest { padding: 80rpx 48rpx 0; text-align: center; }
-.g-avatar { width: 168rpx; height: 168rpx; border-radius: 50%; background: #8B0033; color: #fff; font-size: 80rpx; line-height: 168rpx; margin: 0 auto; }
+.g-avatar { width: 168rpx; height: 168rpx; border-radius: 50%; background: #8A1538; color: #fff; font-size: 80rpx; line-height: 168rpx; margin: 0 auto; }
 .g-name { margin-top: 20rpx; font-size: 32rpx; }
 .g-slogan { margin-top: 48rpx; font-size: 32rpx; }
 .g-btn { width: 280rpx; margin: 56rpx auto 0; border-radius: 16rpx; }
@@ -7,7 +7,7 @@
 .step { width: 140rpx; font-size: 24rpx; color: #999; text-align: center; }
 .step.on { color: #222; font-weight: 600; }
 .dot { width: 56rpx; height: 56rpx; border-radius: 50%; border: 2rpx solid #ccc; line-height: 56rpx; margin: 0 auto 12rpx; }
-.step.on .dot { border-color: #8B0033; color: #8B0033; box-shadow: 0 0 0 8rpx #f6e8ed; }
+.step.on .dot { border-color: #8A1538; color: #8A1538; box-shadow: 0 0 0 8rpx #f6e8ed; }
 .line { flex: 1; height: 2rpx; background: #ddd; margin-top: 28rpx; }
 .profile { display: flex; align-items: center; padding: 32rpx; }
 .avatar-btn { padding: 0; margin: 0 32rpx 0 0; border: none !important; background: none; line-height: 1; position: relative; }
@@ -16,15 +16,15 @@
 .avatar-tip { position: absolute; left: 0; right: 0; bottom: -8rpx; background: rgba(0,0,0,.7); color: #fff; font-size: 16rpx; padding: 4rpx 0; border-radius: 6rpx; }
 .p-info { flex: 1; }
 .nick { font-size: 36rpx; font-weight: 600; }
-.role-tag { display: inline-block; margin-top: 12rpx; font-size: 22rpx; color: #8B0033; background: #f6e8ed; padding: 4rpx 16rpx; border-radius: 999rpx; }
+.role-tag { display: inline-block; margin-top: 12rpx; font-size: 22rpx; color: #8A1538; background: #f6e8ed; padding: 4rpx 16rpx; border-radius: 999rpx; }
 .entries { display: flex; padding: 28rpx 0; }
 .entry { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 28rpx; }
 .e-ico { width: 64rpx; height: 64rpx; border-radius: 50%; background: #d32f2f; color: #fff; text-align: center; line-height: 64rpx; margin-right: 16rpx; font-size: 30rpx; }
 .upgrade { display: flex; align-items: center; justify-content: space-between; padding: 28rpx; background: #fff4d6; }
 .up-t { font-size: 28rpx; font-weight: 600; color: #7a5a00; margin-bottom: 6rpx; }
-.up-go { color: #8B0033; font-size: 26rpx; flex-shrink: 0; margin-left: 16rpx; }
+.up-go { color: #8A1538; font-size: 26rpx; flex-shrink: 0; margin-left: 16rpx; }
 .oa { display: flex; align-items: center; padding: 24rpx 28rpx; }
-.oa-logo { width: 96rpx; height: 96rpx; border-radius: 50%; border: 2rpx solid #eee; color: #8B0033; font-weight: 800; font-style: italic; text-align: center; line-height: 96rpx; margin-right: 24rpx; }
+.oa-logo { width: 96rpx; height: 96rpx; border-radius: 50%; border: 2rpx solid #eee; padding: 0 14rpx; box-sizing: border-box; margin-right: 24rpx; flex-shrink: 0; }
 .oa-name { flex: 1; font-size: 30rpx; }
 .oa-btn { background: #07c160; color: #fff; font-size: 26rpx; padding: 10rpx 32rpx; border-radius: 8rpx; }
 .kb { position: relative; margin-bottom: 20rpx; border-radius: 20rpx; overflow: hidden; border: 3rpx dashed #1fb5ad; }
@@ -36,4 +36,11 @@
 .debug { margin: 40rpx 32rpx 240rpx; padding: 24rpx; border: 2rpx dashed #ccc; border-radius: 16rpx; }
 .debug-roles { display: flex; flex-wrap: wrap; margin-top: 12rpx; }
 .d-role { font-size: 22rpx; padding: 8rpx 20rpx; border-radius: 999rpx; background: #eee; margin: 0 12rpx 12rpx 0; }
-.d-role.on { background: #8B0033; color: #fff; }
+.d-role.on { background: #8A1538; color: #fff; }
+
+.member-main { padding-bottom: 0; }
+.about { padding-top: 0; padding-bottom: 0; }
+.about-card { padding: 8rpx 28rpx 0; }
+.about-logo { display: block; width: 150rpx; height: 52rpx; margin: 24rpx 0 8rpx; }
+.about-row { display: flex; align-items: center; justify-content: space-between; padding: 24rpx 0; border-top: 1rpx solid #f0f0f0; }
+.about-row:first-of-type { border-top: 0; }
