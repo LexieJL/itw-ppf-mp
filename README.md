@@ -29,7 +29,7 @@ ITW PPF 微信小程序的前端代码（原生 WXML / WXSS / JS）。本团队�
 pages/          21 个页面（首页、应用库、产品库、会员中心、知识库、需求咨询等）
 components/     公共组件：权限遮罩、搜索收藏浮窗、行业导航、详情页底栏
 utils/          角色权限、运营配置（cms.js）、统一跳转、收藏、测试数据、产品数据
-images/         品牌 logo、首页模块图标
+images/         ITW Logo、品牌 logo、首页模块图标
 tools/          从 ITW 产品表重新生成产品数据的脚本
 docs/           项目文档
 preview.html    网页版原型（即在线原型的源文件）
