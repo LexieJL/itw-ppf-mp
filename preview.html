@@ -307,7 +307,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
         <li><b>认证审核（上线后）</b>：提交认证后先保持普通会员并显示“审核中”，销售在 CRM 中确认后升级。</li>
         <li><b>游客点底部标签</b>：游客点“应用库”“产品库”时显示模糊页面和注册提示。</li>
         <li><b>工业电商</b>：进入商城页，列出京东、天猫旗舰店；外部网站无法在小程序内打开，点击后复制链接到浏览器访问。</li>
-        <li><b>官网 / 加入我们</b>：放在会员中心「关于 ITW」。官网如在小程序后台配置业务域名，可改为小程序内打开。</li>
+        <li><b>官网 / 加入我们</b>：放在会员中心「关于 ITW」。官网在小程序内用 web-view 打开，需 ITW 在小程序后台把 itwppfasia.com 配置为业务域名。</li>
         <li><b>底部标签栏</b>：微信原生标签栏只在四个主页面显示，二级页面靠左上角返回；要每页都显示需改成自定义底栏。</li>
       </ul>
     </div>
@@ -715,7 +715,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
       } },
     webview: { title: '推文', ppt: '3、6', vis: () => ['guest', '未注册可见'],
       render(st, q) {
-        return `<div class="pad"><div class="card cp" style="text-align:center;padding:40px 20px"><div style="font-size:12px;color:#07c160;margin-bottom:10px">mp.weixin.qq.com</div><div style="font-size:17px;font-weight:600;line-height:1.5">${esc(q.t || '公众号推文')}</div><p class="mut" style="margin-top:14px;line-height:1.7">正式版在这里用 web-view 打开公众号文章。</p></div></div>`;
+        return `<div class="pad"><div class="card cp" style="text-align:center;padding:40px 20px"><div style="font-size:12px;color:#07c160;margin-bottom:10px">${esc(q.host || 'mp.weixin.qq.com')}</div><div style="font-size:17px;font-weight:600;line-height:1.5">${esc(q.t || '公众号推文')}</div><p class="mut" style="margin-top:14px;line-height:1.7">${q.site ? '正式版在这里用 web-view 直接打开 ITW 官网（需在小程序后台把 itwppfasia.com 配置为业务域名）。' : '正式版在这里用 web-view 打开公众号文章。'}</p></div></div>`;
       } }
   };
   const CONSULT = { 'app-detail': 1, 'product-detail': 1 };
@@ -744,7 +744,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
   }
 
   const WEBLINKS = {
-    site: { name: 'ITW PPF 官网', label: 'ITW PPF 官网', host: 'www.itwppfasia.com', url: 'https://www.itwppfasia.com/cn/' },
+    site: { name: 'ITW PPF 官网', label: 'ITW PPF 官网', host: 'www.itwppfasia.com', url: 'https://www.itwppfasia.com/cn/', webview: true },
     jobs: { name: 'ITW（中国）前程无忧官方招聘网', label: '加入我们', host: 'ITW（中国）前程无忧官方招聘', url: 'https://itw.51job.com/postList.html?typeId=5' },
     mallIndustrialJd: { name: '工业品商城（京东）', label: '京东旗舰店', host: 'mall.jd.com', url: 'https://mall.jd.com/index-1000377827.html?from=pc' },
     mallAutoTmall: { name: '汽车养护品商城（天猫）', label: '天猫旗舰店', host: 'wynnsqijuyongpin.tmall.com', url: 'https://wynnsqijuyongpin.tmall.com/index.htm?spm=a1z10.1-b.w5002-26003437453.2.521c773ahpEFGM' },
@@ -772,7 +772,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
     const pageLock = access ? lockFor(access) : null;
     const lock = S.lock || pageLock;
     $('nav').classList.toggle('dark', !!P.dark); document.querySelector('.status').classList.toggle('dark', !!P.dark);
-    $('nav').innerHTML = `${S.stack.length > 1 ? '<button class="back" data-act="back" aria-label="返回">‹</button>' : ''}<span>${P.title}</span><span class="capsule">••• | ◎</span>`;
+    $('nav').innerHTML = `${S.stack.length > 1 ? '<button class="back" data-act="back" aria-label="返回">‹</button>' : ''}<span>${esc(cur().q.nav || P.title)}</span><span class="capsule">••• | ◎</span>`;
     const html = P.render.call(P, f.ps, f.q);
     const hasBar = P.actionBar && !pageLock;
     const body = $('body');
@@ -831,7 +831,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
         if (!can('registered')) { S.lock = lockFor('registered'); S.lockClosable = true; return render(); }
         return go(d.k);
       case 'article': return go('webview', { t: d.t });
-      case 'weblink': { const L = WEBLINKS[d.k]; try { navigator.clipboard.writeText(L.url).catch(() => {}); } catch (_) {} return modal('链接已复制', `${L.name}需要在浏览器中打开，请粘贴到浏览器访问。<div class="mut" style="margin-top:8px;word-break:break-all">${L.url}</div>`); }
+      case 'weblink': { const L = WEBLINKS[d.k]; if (L.webview) return go('webview', { t: L.name, host: L.host, nav: L.name, site: 1 }); try { navigator.clipboard.writeText(L.url).catch(() => {}); } catch (_) {} return modal('链接已复制', `${L.name}需要在浏览器中打开，请粘贴到浏览器访问。<div class="mut" style="margin-top:8px;word-break:break-all">${L.url}</div>`); }
       case 'maskbg': if (e.target === t && S.lock && S.lockClosable) { S.lock = null; render(); } return;
       case 'lockclose': S.lock = null; return render();
       case 'lockgo': { const l = S.curLock; S.lock = null; if (l.go[0] === 'member') { S.stack = [frame('member')]; return render(true); } return go(l.go[0], l.go[1]); }

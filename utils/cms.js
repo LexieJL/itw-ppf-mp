@@ -30,7 +30,7 @@ const HOME = {
 // 小程序不能直接打开外部网站：web 类型默认复制链接，提示用户到浏览器打开；
 // 官网如在小程序后台配置为业务域名，可把 webview 改为 true，用小程序内的网页打开
 const LINKS = {
-  site: { type: 'web', name: 'ITW PPF 官网', url: 'https://www.itwppfasia.com/cn/', webview: false },
+  site: { type: 'web', name: 'ITW PPF 官网', url: 'https://www.itwppfasia.com/cn/', webview: true },
   jobs: { type: 'web', name: 'ITW（中国）前程无忧官方招聘网', url: 'https://itw.51job.com/postList.html?typeId=5' },
   mallIndustrialJd: { type: 'web', name: '工业品商城（京东）', url: 'https://mall.jd.com/index-1000377827.html?from=pc' },
   mallAutoTmall: { type: 'web', name: '汽车养护品商城（天猫）', url: 'https://wynnsqijuyongpin.tmall.com/index.htm?spm=a1z10.1-b.w5002-26003437453.2.521c773ahpEFGM' },

@@ -49,4 +49,5 @@ preview.html    网页版原型（即在线原型的源文件）
 
 - `pages/register/register.js`：`ALLOW_EMPTY` 和 `AUTO_CERTIFY` 改为 `false`（测试期允许空表单、认证自动通过）。
 - 删除「会员中心」底部的测试身份切换。
+- 小程序后台「开发管理 > 业务域名」添加 `www.itwppfasia.com`，并把校验文件放到官网根目录，否则官网在真机上打不开。
 - 本地测试数据换成 CloudBase 接口，详见[后端接口文档](docs/小程序后端接口文档.md)。
