@@ -21,8 +21,8 @@
       <view class="m-icon" style="background: {{item.tint}}"><image src="/images/icons/{{item.icon}}.svg" /></view>
       <view class="m-name">{{item.name}}</view>
       <view class="m-sub">{{item.sub}}</view>
-      <view wx:if="{{item.badge}}" class="m-badge {{item.badgeType}}">{{item.badge}}</view>
-      <view wx:elif="{{item.locked}}" class="m-badge"><image src="/images/icons/lock.svg" />注册</view>
+      <view wx:if="{{item.locked}}" class="m-badge"><image src="/images/icons/lock.svg" />注册</view>
+      <view wx:elif="{{item.badge}}" class="m-badge {{item.badgeType}}">{{item.badge}}</view>
     </view>
   </view>
 </view>

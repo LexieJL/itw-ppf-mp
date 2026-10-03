@@ -15,6 +15,7 @@
 .main { flex: 1; min-width: 0; padding: 24rpx 24rpx 240rpx; }
 .result { padding: 0 32rpx 240rpx; }
 .result-tip { margin-bottom: 16rpx; }
+.more-tip { text-align: center; margin-top: 24rpx; font-size: 22rpx; }
 .prod { background: #fff; border-radius: 16rpx; overflow: hidden; }
 .prod-img { height: 180rpx; font-size: 22rpx; }
 .prod-name { padding: 14rpx 16rpx 0; font-size: 24rpx; font-weight: 600; line-height: 1.4; }

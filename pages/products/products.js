@@ -5,7 +5,7 @@ const mock = require('../../utils/mock')
 Page({
   data: {
     brands: mock.BRANDS, brandIndex: 0, brand: null, series: [], seriesIndex: 0,
-    introOpen: false, list: [], keyword: '', results: [], lock: null
+    introOpen: false, list: [], keyword: '', results: [], total: 0, lock: null
   },
 
   onLoad(q) {
@@ -34,10 +34,9 @@ Page({
   onInput(e) {
     const keyword = e.detail.value.trim()
     const k = keyword.toLowerCase()
-    this.setData({
-      keyword,
-      results: k ? mock.PRODUCTS.filter(p => (p.name + p.code + p.series + p.brandName).toLowerCase().includes(k)) : []
-    })
+    const all = k ? mock.PRODUCTS.filter(p => (p.name + p.code + p.series + p.brandName + mock.findBrand(p.brand).cn).toLowerCase().includes(k)) : []
+    // 最多显示 40 个，避免 setData 过大
+    this.setData({ keyword, total: all.length, results: all.slice(0, 40) })
   },
 
   toDetail(e) { wx.navigateTo({ url: '/pages/product-detail/product-detail?id=' + e.currentTarget.dataset.id }) }

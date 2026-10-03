@@ -4,7 +4,7 @@
     <input placeholder="搜索产品名称、代码或系列" value="{{keyword}}" bindinput="onInput" confirm-type="search" />
   </view>
   <view wx:if="{{keyword}}" class="result">
-    <view class="muted result-tip">“{{keyword}}” 共 {{results.length}} 个产品</view>
+    <view class="muted result-tip">“{{keyword}}” 共 {{total}} 个产品</view>
     <view class="grid2">
       <view class="cell prod" wx:for="{{results}}" wx:key="id" bindtap="toDetail" data-id="{{item.id}}">
         <view class="ph prod-img">产品图</view>
@@ -12,6 +12,7 @@
         <view class="muted prod-code">{{item.brandName}} · {{item.series}}</view>
       </view>
     </view>
+    <view wx:if="{{total > 40}}" class="muted more-tip">仅显示前 40 个，请输入更具体的关键词</view>
   </view>
   <block wx:else>
     <view class="body">

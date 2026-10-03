@@ -25,7 +25,7 @@ Page({
         .map(d => ({ title: d.title, sub: '产品培训 > 文档 > ' + d.docType, url: '/pages/kb-doc/kb-doc?id=' + d.id, locked: !auth.can(d.access) })) }
     ]
     const total = groups.reduce((n, g) => n + g.list.length, 0)
-    groups.forEach(g => { g.list = g.list.slice(0, LIMIT) })
+    groups.forEach(g => { g.count = g.list.length; g.list = g.list.slice(0, LIMIT) })
     this.setData({ keyword, groups, total })
   },
 

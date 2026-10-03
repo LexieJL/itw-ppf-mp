@@ -364,7 +364,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
   const DOC_TYPES = ['手册', '单页', 'ACH', '其他'];
   const APPS = [], DOCS = [], VIDEOS = [];
   INDUSTRIES.forEach(ind => ind.subs.forEach(sub => {
-    DOC_TYPES.forEach((t, i) => DOCS.push({ id: sub.id + '-d' + i, ind, sub, docType: t, title: sub.name + t, pages: 3, access: 'certified' }));
+    DOC_TYPES.forEach((t, i) => DOCS.push({ id: sub.id + '-d' + i, ind, sub, docType: t, title: sub.name + t, pages: 4, access: 'certified' }));
     for (let i = 1; i <= 4; i++) {
       VIDEOS.push({ id: sub.id + '-v' + i, ind, sub, title: '视频' + i, kind: i % 2 ? 'SOP视频' : 'VR视频', desc: sub.name + '相关培训视频' + i + '的文字描述（测试内容）。', access: 'certified' });
       APPS.push({ id: sub.id + '-a' + i, ind, sub, name: '应用' + i, desc: sub.name + '应用' + i + '：应用文字描述，说明使用场景、施工要点和效果（测试内容）。',
@@ -384,7 +384,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
   INDUSTRIES.forEach(ind => (MARKET_DOCS[ind.id] || []).forEach((t, i) => {
     const it = { id: ind.id + '-m' + i, ind, sub: { name: '行业通用' }, allSubs: true, access: 'certified' };
     if (t.startsWith('【视频】')) mVids.push(Object.assign(it, { title: t.replace('【视频】', ''), kind: '解决方案视频', desc: t + '（ITW 提供的资料清单，视频待上传）' }));
-    else mDocs.push(Object.assign(it, { title: t, docType: '手册', pages: 3 }));
+    else mDocs.push(Object.assign(it, { title: t, docType: '手册', pages: 2 }));
   }));
   DOCS.unshift(...mDocs); VIDEOS.unshift(...mVids);
   const COMPANY = [1, 2, 3, 4].map(i => ({ id: 'c' + i, title: '公司介绍' + i, summary: ['集团概况', '品牌历史', '全球布局', '服务网络'][i - 1],
@@ -624,7 +624,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
           ['文档', DOCS.filter(d => hit(d.title + d.docType)).map(d => [d.title, '产品培训 > 文档 > ' + d.docType, 'kb-doc', { id: d.id }, !can(d.access)])]
         ].filter(g => g[1].length);
         if (!groups.length) return `<div class="empty">没有找到“${esc(st.kw)}”相关内容</div>`;
-        return groups.map(g => `<div class="st">${g[0]} <span class="mut">${g[1].length}</span></div>${g[1].slice(0, 12).map(r => `<div class="card cp tap" style="padding:11px 14px;margin-bottom:8px" data-go="${r[2]}" data-q='${JSON.stringify(r[3])}'><div>${esc(r[0])}</div><div class="mut">${esc(r[1])}${r[4] ? ' · 🔒' : ''}</div></div>`).join('')}`).join('');
+        return groups.map(g => `<div class="st">${g[0]} <span class="mut">${g[1].length}</span></div>${g[1].slice(0, 20).map(r => `<div class="card cp tap" style="padding:11px 14px;margin-bottom:8px" data-go="${r[2]}" data-q='${JSON.stringify(r[3])}'><div>${esc(r[0])}</div><div class="mut">${esc(r[1])}${r[4] ? ' · 🔒' : ''}</div></div>`).join('')}`).join('');
       } },
 
     kb: { title: '专属知识库', ppt: '8', access: 'registered', vis: () => can('registered') ? ['all', '所有用户可见'] : ['no', '无权限用户的进入界面'],
@@ -675,7 +675,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
         const title = q.sales ? d.title + '（销售用源文件）' : d.title;
         const crumb = '专属知识库 > 产品培训 > 文档 > ' + title;
         st.fav = { type: 'doc', id: d.id + (q.sales ? '-s' : ''), title, sub: crumb, page: 'kb-doc', q };
-        return `<div class="crumb">${esc(crumb)}</div><div class="pad"><div class="pdf">${[1, 2, 3].map(n => `<div class="pdfp"><h4>${esc(title)}</h4><i></i><i></i><i></i><i></i><i></i><i></i><div class="mut" style="text-align:right">${n} / 3</div></div>`).join('')}<button class="fsb" data-act="toast" data-t="全屏打开 PDF">⤢</button></div><p class="mut" style="text-align:center">点击右上角按钮可全屏查看 PDF</p></div>`;
+        return `<div class="crumb">${esc(crumb)}</div><div class="pad"><div class="pdf">${Array.from({ length: d.pages || 3 }, (_, i) => i + 1).map(n => `<div class="pdfp"><h4>${esc(title)}</h4><i></i><i></i><i></i><i></i><i></i><i></i><div class="mut" style="text-align:right">${n} / ${d.pages || 3}</div></div>`).join('')}<button class="fsb" data-act="toast" data-t="全屏打开 PDF">⤢</button></div><p class="mut" style="text-align:center">点击右上角按钮可全屏查看 PDF</p></div>`;
       }, actionBar: true },
 
     faq: { title: '常见问题库', ppt: '反馈4', access: 'registered', vis: () => can('registered') ? ['all', '所有用户可见'] : ['no', '无权限用户的进入界面'],
@@ -709,7 +709,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
     mall: { title: '工业电商', ppt: '2', vis: () => ['guest', '未注册可见'],
       render() {
         const grp = (t, ks) => `<div class="st">${t}</div><div class="card" style="padding:0">${ks.map(k => `<div class="mallt tap" data-act="weblink" data-k="${k}"><div><b style="font-size:14px">${WEBLINKS[k].label}</b><div class="mut">${WEBLINKS[k].host}</div></div><span style="color:#8A1538;font-size:13px">复制链接 ›</span></div>`).join('')}</div>`;
-        return `<div class="pad"><div class="card cp" style="color:#555;line-height:1.7;font-size:13px">ITW PPF 官方旗舰店。外部商城需在浏览器中打开，点击后会复制链接。</div>
+        return `<div class="pad"><div class="card cp" style="color:#555;line-height:1.7;font-size:13px"><b style="color:#222">ITW PPF 官方网店</b><br>以下店铺在京东、天猫平台，点击后复制店铺链接，请在浏览器或对应 App 中打开。</div>
           ${grp('工业品商城', ['mallIndustrialJd'])}${grp('汽车养护品商城', ['mallAutoTmall', 'mallAutoJd'])}</div>`;
       } },
     webview: { title: '推文', ppt: '3、6', vis: () => ['guest', '未注册可见'],
@@ -738,7 +738,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
     if (type === 'radio') return row(label, req, `<div class="radios"><label><input type="radio" name="isDealer" value="是"> 是</label><label><input type="radio" name="isDealer" value="否"> 否</label></div>`);
     if (type === 'file') return row(label, req, `<input type="file" id="${id}" name="license" style="flex:1;min-width:0;font-size:12px">`);
     if (type === 'code') return row(label, req, `<input type="text" inputmode="numeric" id="${id}" name="${key}" placeholder="${key === 'smsCode' ? '短信验证码' : '邮箱验证码'}"><button type="button" class="codebtn" data-act="code" data-t="${key === 'smsCode' ? 'phone' : 'email'}">获取验证码</button>`);
-    const ph = req ? '请输入' + label : '选填';
+    const ph = reqRaw ? (key === 'brands' ? '请输入' : '请输入' + label) : '选填';
     return row(label, req, `<input type="${type === 'tel' ? 'tel' : type === 'email' ? 'email' : 'text'}" id="${id}" name="${key}" placeholder="${key === 'email' && S.stack.length && cur().ps.role === 'staff' ? 'ITW PPF 企业邮箱' : ph}" value="${val}">`);
   }
 

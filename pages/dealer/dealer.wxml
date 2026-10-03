@@ -1,3 +1,4 @@
+<view class="{{lock ? 'blurred' : ''}}">
 <view class="container">
   <view class="card policy">
     <view class="ph policy-img">经销商政策</view>
@@ -16,4 +17,6 @@
   </view>
   <view class="btn-primary" bindtap="submit">提交申请</view>
 </view>
+</view>
+<lock-mask lock="{{lock}}" />
 <float-bar />

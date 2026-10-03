@@ -11,7 +11,9 @@ const FIELDS = [
 ]
 
 Page({
-  data: { fields: FIELDS, form: {} },
+  data: { fields: FIELDS, form: {}, lock: null },
+
+  onShow() { this.setData({ lock: auth.lockFor('registered') }) },
 
   onLoad() {
     const u = auth.getUser()

@@ -38,6 +38,8 @@ Page({
     appNames: mock.APPS.map(a => mock.subOf(a.subId).name + ' · ' + a.name)
   },
 
+  onShow() { this.setData({ lock: auth.lockFor('registered') }) },
+
   onLoad(q) {
     const u = auth.getUser()
     this.setData({
