@@ -123,7 +123,6 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
 .ext { color: #2e7d32; background: #e8f5e9; padding: 1px 5px; border-radius: 4px; }
 /* 行业 / 品牌导航 */
 .inav-top { display: flex; background: #fff; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 3; }
-.corner { width: 80px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999; background: #f3f3f4; }
 .subs { flex: 1; display: flex; overflow-x: auto; scrollbar-width: none; }
 .subs::-webkit-scrollbar { display: none; }
 .sub { flex-shrink: 0; padding: 0 14px; height: 44px; line-height: 44px; font-size: 13px; color: #444; position: relative; cursor: pointer; white-space: nowrap; }
@@ -435,8 +434,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
 
   function industryNav(st, content) {
     const ind = INDUSTRIES[st.ind];
-    return `<div class="inav-top"><div class="corner">${ind.name}</div><div class="subs">${ind.subs.map((s, i) => `<div class="sub ${i === st.sub ? 'on' : ''}" data-act="sub" data-i="${i}">${esc(s.name)}</div>`).join('')}</div></div>
-      <div class="inav-body"><div class="left">${INDUSTRIES.map((x, i) => `<div class="ind ${i === st.ind ? 'on' : ''}" data-act="ind" data-i="${i}">${x.name}</div>`).join('')}</div><div class="main">${content}</div></div>`;
+    return `<div class="inav-body"><div class="left">${INDUSTRIES.map((x, i) => `<div class="ind ${i === st.ind ? 'on' : ''}" data-act="ind" data-i="${i}">${x.name}</div>`).join('')}</div><div class="bright"><div class="inav-top"><div class="subs">${ind.subs.map((s, i) => `<div class="sub ${i === st.sub ? 'on' : ''}" data-act="sub" data-i="${i}">${esc(s.name)}</div>`).join('')}</div></div><div class="main">${content}</div></div></div>`;
   }
 
   const PAGES = {
