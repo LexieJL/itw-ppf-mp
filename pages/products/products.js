@@ -1,7 +1,7 @@
 const auth = require('../../utils/auth')
 const mock = require('../../utils/mock')
 
-// 左侧 = 品牌，上方 = 该品牌的产品系列（来自 ITW 产品表）；右侧顶部是品牌介绍卡片
+// 左侧 = 品牌（通到顶部），右侧上方 = 该品牌的产品系列标签（来自 ITW 产品表），下面是品牌介绍卡片和产品
 Page({
   data: {
     brands: mock.BRANDS, brandIndex: 0, brand: null, series: [], seriesIndex: 0,

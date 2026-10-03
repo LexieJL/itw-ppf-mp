@@ -151,6 +151,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
 .spec { display: flex; padding: 9px 0; border-bottom: 1px solid #f3f3f3; font-size: 13px; }
 .spec span:first-child { width: 50%; color: #888; }
 .bleft { max-height: 640px; overflow-y: auto; scrollbar-width: none; }
+.bright { flex: 1; min-width: 0; }
+.bright .inav-top { border-bottom: 0; box-shadow: 0 1px 0 #eee; }
 .ind.brand { height: auto; min-height: 50px; padding: 6px 4px; font-size: 12px; word-break: break-all; line-height: 1.3; }
 .ind.brand small { display: block; font-size: 10px; color: #999; font-weight: 400; margin-top: 2px; }
 .ind.brand.on small { color: #8A1538; }
@@ -498,8 +500,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
         const logo = b.logo ? `<img class="blogo" src="${b.logo}" alt="${esc(b.name)}">` : `<div class="blogo ph">${esc(b.name)}</div>`;
         const card = `<div class="card cp tap bcard" data-act="bintro">${'<div style="display:flex;align-items:center;gap:10px">' + logo + `<div><div style="font-weight:600">${esc(b.name)} ${esc(b.cn)}</div><div class="mut">${b.count} 个产品</div></div></div>`}
           ${b.intro ? `<div class="bintro ${st.open ? 'open' : ''}">${esc(b.intro)}</div><div class="more">${st.open ? '收起' : '展开品牌介绍'}</div>` : '<div class="mut" style="margin-top:8px">品牌介绍待补充</div>'}</div>`;
-        return `<div class="inav-top"><div class="corner">品牌</div><div class="subs">${series.length ? series.map((c, i) => `<div class="sub ${i === st.cat ? 'on' : ''}" data-act="cat" data-i="${i}">${esc(c)}</div>`).join('') : '<div class="sub mut">暂无产品</div>'}</div></div>
-          <div class="inav-body"><div class="left bleft">${BRANDS.map((x, i) => `<div class="ind brand ${i === st.brand ? 'on' : ''}" data-act="brand" data-i="${i}"><div>${esc(x.name)}${x.cn ? `<small>${esc(x.cn)}</small>` : ''}</div></div>`).join('')}</div><div class="main">${card}<div class="g2">${list.map(p => tile(p, p.series + ' · ' + p.skus.length + ' 个规格')).join('')}</div></div></div>`;
+        return `<div class="inav-body"><div class="left bleft">${BRANDS.map((x, i) => `<div class="ind brand ${i === st.brand ? 'on' : ''}" data-act="brand" data-i="${i}"><div>${esc(x.name)}${x.cn ? `<small>${esc(x.cn)}</small>` : ''}</div></div>`).join('')}</div><div class="bright"><div class="inav-top"><div class="subs">${series.length ? series.map((c, i) => `<div class="sub ${i === st.cat ? 'on' : ''}" data-act="cat" data-i="${i}">${esc(c)}</div>`).join('') : '<div class="sub mut">暂无产品</div>'}</div></div><div class="main">${card}<div class="g2">${list.map(p => tile(p, p.series + ' · ' + p.skus.length + ' 个规格')).join('')}</div></div></div></div>`;
       } },
 
     'product-detail': { title: '产品库', ppt: '7', access: 'registered', vis: () => can('registered') ? ['all', '所有用户可见'] : ['no', '无权限用户的进入界面'],
