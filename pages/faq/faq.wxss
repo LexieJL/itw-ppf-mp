@@ -1,11 +1,11 @@
 .cats { white-space: nowrap; padding: 0 24rpx; }
 .cat { display: inline-block; padding: 10rpx 28rpx; margin: 0 8rpx 8rpx; border-radius: 999rpx; background: #fff; font-size: 26rpx; color: #555; }
-.cat.on { background: #8B0033; color: #fff; }
+.cat.on { background: #8A1538; color: #fff; }
 .qa { padding: 24rpx 28rpx; }
 .q { display: flex; align-items: flex-start; }
 .q-mark, .a-mark { width: 40rpx; height: 40rpx; border-radius: 8rpx; font-size: 22rpx; font-weight: 700; text-align: center; line-height: 40rpx; margin-right: 16rpx; flex-shrink: 0; }
-.q-mark { background: #8B0033; color: #fff; }
-.a-mark { background: #f6e8ed; color: #8B0033; }
+.q-mark { background: #8A1538; color: #fff; }
+.a-mark { background: #f6e8ed; color: #8A1538; }
 .q-t { flex: 1; font-size: 28rpx; font-weight: 600; line-height: 1.5; }
 .arrow { font-size: 32rpx; color: #999; margin-left: 12rpx; }
 .a { display: flex; margin-top: 16rpx; font-size: 26rpx; color: #555; line-height: 1.7; }

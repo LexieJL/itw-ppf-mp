@@ -3,6 +3,6 @@
 .act { display: flex; flex-direction: column; align-items: center; width: 96rpx; margin-right: 16rpx; }
 .share { padding: 0; margin: 0 16rpx 0 0; border: none !important; background: none; line-height: 1.2; }
 .ico { font-size: 40rpx; line-height: 1.1; color: #333; }
-.ico.on { color: #8B0033; }
+.ico.on { color: #8A1538; }
 .lbl { font-size: 20rpx; color: #666; }
-.consult { flex: 1; height: 80rpx; line-height: 80rpx; text-align: center; background: #8B0033; color: #fff; border-radius: 999rpx; font-size: 28rpx; }
+.consult { flex: 1; height: 80rpx; line-height: 80rpx; text-align: center; background: #8A1538; color: #fff; border-radius: 999rpx; font-size: 28rpx; }

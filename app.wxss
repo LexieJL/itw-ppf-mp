@@ -1,5 +1,5 @@
 page {
-  --brand: #8B0033;
+  --brand: #8A1538;
   --brand-soft: #f6e8ed;
   background: #f6f6f7;
   color: #1f1f1f;

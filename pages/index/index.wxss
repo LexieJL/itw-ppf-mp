@@ -7,7 +7,7 @@
 .slide-sub { font-size: 22rpx; opacity: .8; margin-top: 16rpx; position: relative; }
 
 .notice { margin: 24rpx 32rpx 0; padding: 22rpx 24rpx 22rpx 28rpx; background: linear-gradient(90deg, #fff7f9, #fdeef3); border: 2rpx solid #f3dce4; color: #6b1a36; border-radius: 24rpx; font-size: 24rpx; display: flex; align-items: center; justify-content: space-between; }
-.notice-go { flex-shrink: 0; background: #8B0033; color: #fff; border-radius: 999rpx; padding: 8rpx 22rpx; font-size: 22rpx; }
+.notice-go { flex-shrink: 0; background: #8A1538; color: #fff; border-radius: 999rpx; padding: 8rpx 22rpx; font-size: 22rpx; }
 
 .modules { display: flex; flex-wrap: wrap; justify-content: space-between; padding: 28rpx 32rpx 240rpx; }
 .module { width: calc(50% - 12rpx); background: #fff; border-radius: 28rpx; padding: 32rpx 28rpx 28rpx; box-sizing: border-box; margin-bottom: 24rpx; position: relative; overflow: hidden; border: 2rpx solid #f2eef0; box-shadow: 0 4rpx 20rpx rgba(60,10,30,.05); }
@@ -19,4 +19,4 @@
 .m-badge { position: absolute; right: 20rpx; top: 24rpx; font-size: 20rpx; display: flex; align-items: center; padding: 4rpx 14rpx; border-radius: 999rpx; background: #f6f6f7; color: #888; }
 .m-badge image { width: 20rpx; height: 20rpx; margin-right: 6rpx; }
 .m-badge.ext { background: #e8f5e9; color: #2e7d32; }
-.m-badge.new { background: #f6e8ed; color: #8B0033; }
+.m-badge.new { background: #f6e8ed; color: #8A1538; }

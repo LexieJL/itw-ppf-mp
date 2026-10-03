@@ -8,5 +8,5 @@
 .video { height: 380rpx; }
 .files { margin-top: 24rpx; }
 .file { background: #fff; border-radius: 16rpx; padding: 28rpx 24rpx; box-sizing: border-box; font-size: 28rpx; font-weight: 600; }
-.file-ico { display: inline-block; font-size: 20rpx; color: #fff; background: #8B0033; border-radius: 8rpx; padding: 4rpx 12rpx; margin-bottom: 12rpx; }
+.file-ico { display: inline-block; font-size: 20rpx; color: #fff; background: #8A1538; border-radius: 8rpx; padding: 4rpx 12rpx; margin-bottom: 12rpx; }
 .file .muted { font-weight: normal; margin-top: 6rpx; }

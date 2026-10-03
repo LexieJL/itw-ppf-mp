@@ -1,6 +1,6 @@
 .viewer { position: relative; background: #e9e9ec; border-radius: 20rpx; padding: 24rpx; }
 .page { background: #fff; border-radius: 8rpx; padding: 40rpx 32rpx; margin-bottom: 20rpx; box-shadow: 0 2rpx 8rpx rgba(0,0,0,.06); }
-.page-h { font-size: 30rpx; font-weight: 600; margin-bottom: 24rpx; color: #8B0033; }
+.page-h { font-size: 30rpx; font-weight: 600; margin-bottom: 24rpx; color: #8A1538; }
 .line { height: 16rpx; background: #eee; border-radius: 8rpx; margin-bottom: 18rpx; }
 .line:nth-child(3n) { width: 70%; }
 .page-n { text-align: right; font-size: 20rpx; color: #aaa; margin-top: 16rpx; }
