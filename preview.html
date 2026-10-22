@@ -370,7 +370,12 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
         accessKey: CLOUDBASE_PUBLISHABLE_KEY
       });
 
-      const [industryResult, categoryResult, applicationResult] =
+      const [
+        industryResult,
+        categoryResult,
+        applicationResult,
+        resourceResult
+      ] =
         await Promise.all([
           cloudApp.models.industries.list({
             filter: { where: {} },
@@ -389,12 +394,19 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
             pageSize: 100,
             pageNumber: 1,
             getCount: false
+          }),
+          cloudApp.models.application_resources.list({
+            filter: { where: {} },
+            pageSize: 100,
+            pageNumber: 1,
+            getCount: false
           })
         ]);
 
       if (industryResult.error) throw industryResult.error;
       if (categoryResult.error) throw categoryResult.error;
       if (applicationResult.error) throw applicationResult.error;
+      if (resourceResult.error) throw resourceResult.error;
 
       const industryRecords =
         industryResult.data?.records || [];
@@ -404,6 +416,9 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
 
       const applicationRecords =
         applicationResult.data?.records || [];
+      
+      const resourceRecords =
+        resourceResult.data?.records || [];
 
       const relationId = (record, field) => {
         const value = record[field];
@@ -460,17 +475,23 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
       };
 
       // 收集所有需要转换的 cloud:// 图片和视频地址
-      const mediaFileIds = [
-        ...new Set(
-          applicationRecords
-            .flatMap(item => [
-              mediaFileId(item.mainImage),
-              mediaFileId(item.videoFile),
-              mediaFileId(item.videoCover)
-            ])
-            .filter(fileId => fileId.startsWith('cloud://'))
-        )
-      ];
+const mediaFileIds = [
+  ...new Set(
+    applicationRecords
+      .flatMap(item => [
+        mediaFileId(item.mainImage),
+        mediaFileId(item.videoFile),
+        mediaFileId(item.videoCover)
+      ])
+      .concat(
+        resourceRecords.flatMap(item => [
+          mediaFileId(item.coverImage),
+          mediaFileId(item.resourceFile)
+        ])
+      )
+      .filter(fileId => fileId.startsWith('cloud://'))
+  )
+];
 
       const mediaUrlByFileId = new Map();
 
@@ -629,9 +650,42 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
               videoCover: mediaFileId(item.videoCover),
               videoCoverUrl: mediaUrl(item.videoCover),
               articles: [],
+              resources: [],
               singlePageDocId: null,
               achDocId: null,
               access: 'certified'
+            });
+          });
+                // 第四层：应用关联资源（推文、视频、单页资料、ACH）
+        resourceRecords
+          .filter(item => item.visible !== false)
+          .sort(
+            (a, b) =>
+              Number(a.sort || 0) - Number(b.sort || 0)
+          )
+          .forEach(item => {
+            const applicationRecordId =
+              relationId(item, 'application');
+
+            const application = APPS.find(
+              app => app.cloudId === applicationRecordId
+            );
+
+            if (!application) return;
+
+            application.resources.push({
+              id: item.code || item._id,
+              cloudId: item._id,
+              title: item.title || '未命名资源',
+              summary: item.summary || '',
+              kind: item.resourceKind || '',
+              coverImage: mediaFileId(item.coverImage),
+              coverImageUrl: mediaUrl(item.coverImage),
+              resourceFile: mediaFileId(item.resourceFile),
+              resourceFileUrl: mediaUrl(item.resourceFile),
+              externalUrl: item.externalUrl || '',
+              access: item.accessScope || 'certified',
+              sort: Number(item.sort || 0)
             });
           });
       }
@@ -642,7 +696,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
         'CloudBase catalog synchronized:',
         industryRecords.length,
         categoryRecords.length,
-        applicationRecords.length
+        applicationRecords.length,
+        resourceRecords.length
       );
     } catch (error) {
       console.error(
@@ -773,16 +828,121 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
       render(st, q) {
         const a = byId(APPS, q.id) || APPS[0];
         const crumb = [a.ind.name, a.sub.name, a.name].join(' > ');
+        const resources = (a.resources || []).filter(
+          resource =>
+            !resource.access ||
+            NEED[resource.access] == null ||
+            can(resource.access)
+        );
+
+        const articleResources = resources.filter(
+          resource => resource.kind === 'article'
+        );
+
+        const articleHtml = articleResources.length
+          ? articleResources
+              .map(
+                resource =>
+                  `<div class="art" data-act="resource" data-url="${esc(
+                    resource.externalUrl ||
+                    resource.resourceFileUrl ||
+                    ''
+                  )}">
+                    <div class="ph">
+                      ${
+                        resource.coverImageUrl
+                          ? `<img class="media-img" src="${esc(
+                              resource.coverImageUrl
+                            )}" alt="${esc(
+                              resource.title
+                            )}" loading="lazy">`
+                          : '推文封面'
+                      }
+                    </div>
+                    <div>${esc(resource.title)}</div>
+                  </div>`
+              )
+              .join('')
+          : (a.articles || [])
+              .map(
+                title =>
+                  `<div class="art" data-act="article" data-t="${esc(
+                    title
+                  )}">
+                    <div class="ph">推文封面</div>
+                    <div>${esc(title)}</div>
+                  </div>`
+              )
+              .join('');
+
+        const videoResource = resources.find(
+          resource => resource.kind === 'video'
+        );
+
+        const videoUrl =
+          a.videoFileUrl ||
+          videoResource?.resourceFileUrl ||
+          '';
+
+        const videoPoster =
+          a.videoCoverUrl ||
+          videoResource?.coverImageUrl ||
+          a.mainImageUrl ||
+          '';
+
+        const fileResources = resources.filter(
+          resource =>
+            resource.kind === 'single_page' ||
+            resource.kind === 'ach'
+        );
+
+        const fileHtml = fileResources.length
+          ? `<div class="g2">${fileResources
+              .map(
+                resource =>
+                  `<div class="file" data-act="resource" data-url="${esc(
+                    resource.resourceFileUrl ||
+                    resource.externalUrl ||
+                    ''
+                  )}">
+                    <span class="fico">${
+                      resource.kind === 'ach' ? 'ACH' : 'PDF'
+                    }</span>
+                    <div>${esc(resource.title)}</div>
+                    <div class="mut" style="font-weight:400">
+                      ${
+                        resource.resourceFileUrl ||
+                        resource.externalUrl
+                          ? '点击查看或下载'
+                          : '文件待上传'
+                      }
+                    </div>
+                  </div>`
+              )
+              .join('')}</div>`
+          : a.cloudId
+            ? '<div class="card cp mut">相关资料待添加</div>'
+            : `<div class="g2">
+                <div class="file" data-go="kb-doc" data-q='{"id":"${a.singlePageDocId}"}'>
+                  <span class="fico">PDF</span>
+                  <div>单页</div>
+                  <div class="mut" style="font-weight:400">跳转专属知识库</div>
+                </div>
+                <div class="file" data-go="kb-doc" data-q='{"id":"${a.achDocId}","sales":1}'>
+                  <span class="fico">ACH</span>
+                  <div>销售用ACH源文件</div>
+                  <div class="mut" style="font-weight:400">跳转专属知识库</div>
+                </div>
+              </div>`;
         st.fav = { type: 'app', id: a.id, title: a.name, sub: crumb, page: 'app-detail', q };
         st.consult = 'inquiry';
         st.consultQ = { tab: 0, app: a.id };
         return `<div class="crumb">${esc(crumb)}</div><div class="pad">
           <div class="card cp"><div style="font-size:18px;font-weight:600;margin-bottom:8px">${a.name}</div><div style="color:#555;line-height:1.7;font-size:13px">${esc(a.desc)}</div></div>
           <div class="card ph app-main-media">${a.mainImageUrl ? `<img class="media-img" src="${esc(a.mainImageUrl)}" alt="${esc(a.name)}">` : '应用图示'}</div>
-          <div class="st">相关推文</div><div class="hscroll">${a.articles.map(t => `<div class="art" data-act="article" data-t="${esc(t)}"><div class="ph">推文封面</div><div>${esc(t)}</div></div>`).join('')}</div>
-          <div class="st">应用视频</div>${a.videoFileUrl ? `<div class="card"><video class="app-video" src="${esc(a.videoFileUrl)}" ${a.videoCoverUrl || a.mainImageUrl ? `poster="${esc(a.videoCoverUrl || a.mainImageUrl)}"` : ''} controls playsinline preload="metadata">当前浏览器不支持视频播放</video></div>` : `<div class="card ph" style="height:180px"><div class="play">▶</div>视频待上传</div>`}
-          <div class="g2"><div class="file" data-go="kb-doc" data-q='{"id":"${a.singlePageDocId}"}'><span class="fico">PDF</span><div>单页</div><div class="mut" style="font-weight:400">跳转专属知识库</div></div>
-          <div class="file" data-go="kb-doc" data-q='{"id":"${a.achDocId}","sales":1}'><span class="fico">ACH</span><div>销售用ACH源文件</div><div class="mut" style="font-weight:400">跳转专属知识库</div></div></div>
+          <div class="st">相关推文</div>${articleHtml ? `<div class="hscroll">${articleHtml}</div>` : '<div class="card cp mut">相关推文待添加</div>'}
+          <div class="st">应用视频</div>${videoUrl ? `<div class="card"><video class="app-video" src="${esc(videoUrl)}" ${videoPoster ? `poster="${esc(videoPoster)}"` : ''} controls playsinline preload="metadata">当前浏览器不支持视频播放</video></div>` : `<div class="card ph" style="height:180px"><div class="play">▶</div>视频待上传</div>`}
+          <div class="st">相关资料</div>${fileHtml}
         </div>`;
       }, actionBar: true },
 
@@ -1140,6 +1300,13 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
         if (!can('registered')) { S.lock = lockFor('registered'); S.lockClosable = true; return render(); }
         return go(d.k);
       case 'article': return go('webview', { t: d.t });
+      case 'resource':
+        if (!d.url) return toast('资源内容待上传');
+        if (!/^https?:\/\//i.test(d.url)) {
+          return toast('资源地址暂不可用');
+        }
+        window.open(d.url, '_blank', 'noopener,noreferrer');
+        return;
       case 'weblink': { const L = WEBLINKS[d.k]; if (L.webview) return go('webview', { t: L.name, host: L.host, nav: L.name, site: 1 }); try { navigator.clipboard.writeText(L.url).catch(() => {}); } catch (_) {} return modal('链接已复制', `${L.name}需要在浏览器中打开，请粘贴到浏览器访问。<div class="mut" style="margin-top:8px;word-break:break-all">${L.url}</div>`); }
       case 'maskbg': if (e.target === t && S.lock && S.lockClosable) { S.lock = null; render(); } return;
       case 'lockclose': S.lock = null; return render();
