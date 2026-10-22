@@ -356,7 +356,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
     marine: 'marine'
   };
 
-  async function syncIndustriesFromCloudBase() {
+    async function syncIndustriesFromCloudBase() {
     try {
       const cloudApp = cloudbase.init({
         env: CLOUDBASE_ENV_ID,
@@ -364,28 +364,105 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
         accessKey: CLOUDBASE_PUBLISHABLE_KEY
       });
 
-      const result = await cloudApp.models.industries.list({
-        filter: { where: {} },
-        pageSize: 100,
-        pageNumber: 1,
-        getCount: false
-      });
+      const [industryResult, categoryResult] = await Promise.all([
+        cloudApp.models.industries.list({
+          filter: { where: {} },
+          pageSize: 100,
+          pageNumber: 1,
+          getCount: false
+        }),
+        cloudApp.models.application_categories.list({
+          filter: { where: {} },
+          pageSize: 100,
+          pageNumber: 1,
+          getCount: false
+        })
+      ]);
 
-      if (result.error) throw result.error;
+      if (industryResult.error) throw industryResult.error;
+      if (categoryResult.error) throw categoryResult.error;
 
-      const records = result.data?.records || [];
-      records
+      const industryRecords = industryResult.data?.records || [];
+      const categoryRecords = categoryResult.data?.records || [];
+
+      // 同步七个行业，并保存 CloudBase 记录 ID
+      industryRecords
         .filter(item => item.visible !== false)
         .forEach(item => {
           const previewId = CLOUD_INDUSTRY_IDS[item.code];
           const industry = INDUSTRIES.find(row => row.id === previewId);
-          if (industry && item.name) industry.name = item.name;
+
+          if (industry) {
+            industry._cloudId = item._id;
+
+            if (item.name) {
+              industry.name = item.name;
+            }
+          }
+        });
+
+      const prefixToIndustry = {
+        traffic: 'traffic',
+        electronics: 'electronics',
+        auto: 'auto',
+        heavy: 'heavy',
+        fluid: 'fluid',
+        wind: 'wind',
+        marine: 'marine'
+      };
+
+      const counters = {};
+
+      categoryRecords
+        .filter(item => item.visible !== false)
+        .sort((a, b) => Number(a.sort || 0) - Number(b.sort || 0))
+        .forEach(item => {
+          const relationId =
+            typeof item.industry === 'string'
+              ? item.industry
+              : item.industry?._id ||
+                item['@industry']?.v1?.record?._id;
+
+          let industry = INDUSTRIES.find(
+            row => row._cloudId === relationId
+          );
+
+          // 兼容关联字段没有随查询返回的情况
+          if (!industry && item.code) {
+            const prefix = item.code.split('_')[0];
+            const previewId = prefixToIndustry[prefix];
+
+            industry = INDUSTRIES.find(
+              row => row.id === previewId
+            );
+          }
+
+          if (!industry) return;
+
+          const index = counters[industry.id] || 0;
+          const sub = industry.subs[index];
+
+          if (!sub) return;
+
+          sub.id = item.code || sub.id;
+          sub.name = item.name || sub.name;
+          sub.desc = item.description || sub.desc;
+
+          counters[industry.id] = index + 1;
         });
 
       render();
-      console.log('CloudBase industries synchronized:', records.length);
+
+      console.log(
+        'CloudBase catalog synchronized:',
+        industryRecords.length,
+        categoryRecords.length
+      );
     } catch (error) {
-      console.error('CloudBase industries synchronization failed:', error);
+      console.error(
+        'CloudBase catalog synchronization failed:',
+        error
+      );
     }
   }
   const BANNERS = [
