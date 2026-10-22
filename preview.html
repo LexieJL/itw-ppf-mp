@@ -356,7 +356,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
     marine: 'marine'
   };
 
-     async function syncIndustriesFromCloudBase() {
+    async function syncIndustriesFromCloudBase() {
     try {
       const cloudApp = cloudbase.init({
         env: CLOUDBASE_ENV_ID,
@@ -364,33 +364,63 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
         accessKey: CLOUDBASE_PUBLISHABLE_KEY
       });
 
-      const [industryResult, categoryResult] = await Promise.all([
-        cloudApp.models.industries.list({
-          filter: { where: {} },
-          pageSize: 100,
-          pageNumber: 1,
-          getCount: false
-        }),
-        cloudApp.models.application_categories.list({
-          filter: { where: {} },
-          pageSize: 100,
-          pageNumber: 1,
-          getCount: false
-        })
-      ]);
+      const [industryResult, categoryResult, applicationResult] =
+        await Promise.all([
+          cloudApp.models.industries.list({
+            filter: { where: {} },
+            pageSize: 100,
+            pageNumber: 1,
+            getCount: false
+          }),
+          cloudApp.models.application_categories.list({
+            filter: { where: {} },
+            pageSize: 100,
+            pageNumber: 1,
+            getCount: false
+          }),
+          cloudApp.models.applications.list({
+            filter: { where: {} },
+            pageSize: 100,
+            pageNumber: 1,
+            getCount: false
+          })
+        ]);
 
       if (industryResult.error) throw industryResult.error;
       if (categoryResult.error) throw categoryResult.error;
+      if (applicationResult.error) throw applicationResult.error;
 
-      const industryRecords = industryResult.data?.records || [];
-      const categoryRecords = categoryResult.data?.records || [];
+      const industryRecords =
+        industryResult.data?.records || [];
 
-      // 同步七个行业，并保存 CloudBase 记录 ID
+      const categoryRecords =
+        categoryResult.data?.records || [];
+
+      const applicationRecords =
+        applicationResult.data?.records || [];
+
+      const relationId = (record, field) => {
+        const value = record[field];
+
+        if (typeof value === 'string') {
+          return value;
+        }
+
+        return (
+          value?._id ||
+          record['@' + field]?.v1?.record?._id ||
+          null
+        );
+      };
+
+      // 第一层：行业
       industryRecords
         .filter(item => item.visible !== false)
         .forEach(item => {
           const previewId = CLOUD_INDUSTRY_IDS[item.code];
-          const industry = INDUSTRIES.find(row => row.id === previewId);
+          const industry = INDUSTRIES.find(
+            row => row.id === previewId
+          );
 
           if (industry) {
             industry._cloudId = item._id;
@@ -413,18 +443,19 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
 
       const counters = {};
 
+      // 第二层：应用分类
       categoryRecords
         .filter(item => item.visible !== false)
-        .sort((a, b) => Number(a.sort || 0) - Number(b.sort || 0))
+        .sort(
+          (a, b) =>
+            Number(a.sort || 0) - Number(b.sort || 0)
+        )
         .forEach(item => {
-          const relationId =
-            typeof item.industry === 'string'
-              ? item.industry
-              : item.industry?._id ||
-                item['@industry']?.v1?.record?._id;
+          const industryRecordId =
+            relationId(item, 'industry');
 
           let industry = INDUSTRIES.find(
-            row => row._cloudId === relationId
+            row => row._cloudId === industryRecordId
           );
 
           // 兼容关联字段没有随查询返回的情况
@@ -444,6 +475,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
 
           if (!sub) return;
 
+          sub._cloudId = item._id;
           sub.id = item.code || sub.id;
           sub.name = item.name || sub.name;
           sub.desc = item.description || sub.desc;
@@ -451,12 +483,58 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
           counters[industry.id] = index + 1;
         });
 
+      // 第三层：真实应用
+      if (applicationRecords.length > 0) {
+        APPS.splice(0, APPS.length);
+
+        applicationRecords
+          .filter(item => item.visible !== false)
+          .sort(
+            (a, b) =>
+              Number(a.sort || 0) - Number(b.sort || 0)
+          )
+          .forEach(item => {
+            const categoryRecordId =
+              relationId(item, 'applicationCategory');
+
+            const sub = INDUSTRIES
+              .flatMap(industry => industry.subs)
+              .find(
+                category =>
+                  category._cloudId === categoryRecordId
+              );
+
+            if (!sub) return;
+
+            const industry = INDUSTRIES.find(
+              row => row.subs.includes(sub)
+            );
+
+            APPS.push({
+              id: item.code || item._id,
+              cloudId: item._id,
+              ind: industry,
+              sub: sub,
+              name: item.name || '未命名应用',
+              desc: item.description || '',
+              mainImage: item.mainImage || '',
+              videoFile: item.videoFile || '',
+              videoCover: item.videoCover || '',
+              articles: [],
+              singlePageDocId: null,
+              achDocId: null,
+              access: 'certified'
+            });
+          });
+      }
+
       render();
 
       console.log(
         'CloudBase catalog synchronized:',
         industryRecords.length,
-        categoryRecords.length
+        categoryRecords.length,
+        applicationRecords.length
       );
     } catch (error) {
       console.error(
@@ -464,7 +542,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
         error
       );
     }
-  }
+  }   
   const BANNERS = [
     { title: '新品发布｜Devcon 高性能修补剂', sub: '金属修复 · 耐磨防护 · 快速固化', bg: 'linear-gradient(120deg,#5e0022 0%,#8A1538 55%,#b3264f 100%)' },
     { title: '行业方案｜风电叶片维修全流程', sub: '从现场检测到修复验收', bg: 'linear-gradient(120deg,#2b1d24 0%,#5b1830 55%,#8A1538 100%)' },
