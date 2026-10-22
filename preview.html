@@ -1,3 +1,6 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
 <title>ITW PPF 小程序原型</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -85,6 +88,9 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
 .card { background: #fff; border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
 .cp { padding: 14px; }
 .ph { background: linear-gradient(135deg, #efe7ea, #dccfd4); color: #7a5a66; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-size: 12px; }
+.media-img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.app-main-media { height: 140px; }
+.app-video { width: 100%; height: 180px; display: block; object-fit: cover; background: #111; }
 .play { width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,.45); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 6px; }
 .st { font-size: 15px; font-weight: 600; margin: 18px 0 9px; }
 .mut { color: #888; font-size: 12px; }
@@ -412,6 +418,105 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
           null
         );
       };
+            // 兼容字符串、数组、对象和 JSON 字符串形式的媒体字段
+      const mediaFileId = value => {
+        if (!value) return '';
+
+        if (typeof value === 'string') {
+          const text = value.trim();
+
+          if (
+            (text.startsWith('{') && text.endsWith('}')) ||
+            (text.startsWith('[') && text.endsWith(']'))
+          ) {
+            try {
+              return mediaFileId(JSON.parse(text));
+            } catch (_) {
+              return text;
+            }
+          }
+
+          return text;
+        }
+
+        if (Array.isArray(value)) {
+          return mediaFileId(value[0]);
+        }
+
+        if (typeof value === 'object') {
+          return mediaFileId(
+            value.fileID ||
+            value.fileId ||
+            value.cloudPath ||
+            value.tempFileURL ||
+            value.download_url ||
+            value.url ||
+            value.value ||
+            ''
+          );
+        }
+
+        return '';
+      };
+
+      // 收集所有需要转换的 cloud:// 图片和视频地址
+      const mediaFileIds = [
+        ...new Set(
+          applicationRecords
+            .flatMap(item => [
+              mediaFileId(item.mainImage),
+              mediaFileId(item.videoFile),
+              mediaFileId(item.videoCover)
+            ])
+            .filter(fileId => fileId.startsWith('cloud://'))
+        )
+      ];
+
+      const mediaUrlByFileId = new Map();
+
+      // 将 cloud:// 地址批量转换成网页可显示的 HTTPS 地址
+      if (mediaFileIds.length > 0) {
+        try {
+          const mediaResult = await cloudApp.getTempFileURL({
+            fileList: mediaFileIds
+          });
+
+          const mediaList =
+            mediaResult.fileList ||
+            mediaResult.data?.fileList ||
+            [];
+
+          mediaList.forEach(file => {
+            const fileId =
+              file.fileID ||
+              file.fileId ||
+              file.cloudPath;
+
+            const url =
+              file.tempFileURL ||
+              file.download_url ||
+              file.url;
+
+            if (fileId && url) {
+              mediaUrlByFileId.set(fileId, url);
+            }
+          });
+        } catch (mediaError) {
+          console.error(
+            'CloudBase media URL conversion failed:',
+            mediaError
+          );
+        }
+      }
+
+      const mediaUrl = value => {
+        const fileId = mediaFileId(value);
+
+        if (!fileId) return '';
+        if (/^https?:\/\//i.test(fileId)) return fileId;
+
+        return mediaUrlByFileId.get(fileId) || '';
+      };
 
       // 第一层：行业
       industryRecords
@@ -517,9 +622,12 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
               sub: sub,
               name: item.name || '未命名应用',
               desc: item.description || '',
-              mainImage: item.mainImage || '',
-              videoFile: item.videoFile || '',
-              videoCover: item.videoCover || '',
+              mainImage: mediaFileId(item.mainImage),
+              mainImageUrl: mediaUrl(item.mainImage),
+              videoFile: mediaFileId(item.videoFile),
+              videoFileUrl: mediaUrl(item.videoFile),
+              videoCover: mediaFileId(item.videoCover),
+              videoCoverUrl: mediaUrl(item.videoCover),
               articles: [],
               singlePageDocId: null,
               achDocId: null,
@@ -657,7 +765,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
         const sub = INDUSTRIES[st.ind].subs[st.sub];
         const apps = APPS.filter(a => a.sub === sub);
         return industryNav(st, `<div class="card cp"><div style="font-weight:600;margin-bottom:6px">${INDUSTRIES[st.ind].name} · ${esc(sub.name)}</div><div class="mut" style="line-height:1.7">${esc(sub.desc)}</div></div>
-          <div class="g2">${apps.map(a => `<div class="tile" data-go="app-detail" data-q='{"id":"${a.id}"}'><div class="ph">应用图示</div><div class="tt">${a.name}</div><div class="ts">${can('certified') ? '查看详情' : '🔒 认证可见详情'}</div></div>`).join('')}</div>`);
+          <div class="g2">${apps.map(a => `<div class="tile" data-go="app-detail" data-q='{"id":"${a.id}"}'><div class="ph">${a.mainImageUrl ? `<img class="media-img" src="${esc(a.mainImageUrl)}" alt="${esc(a.name)}" loading="lazy">` : '应用图示'}</div><div class="tt">${esc(a.name)}</div><div class="ts">${can('certified') ? '查看详情' : '🔒 认证可见详情'}</div></div>`).join('')}</div>`);
       } },
 
     'app-detail': { title: '应用库', ppt: '5–6', vis: () => can('certified') ? ['ok', '有权限用户的进入界面'] : ['no', '无权限用户的进入界面'],
@@ -670,9 +778,9 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
         st.consultQ = { tab: 0, app: a.id };
         return `<div class="crumb">${esc(crumb)}</div><div class="pad">
           <div class="card cp"><div style="font-size:18px;font-weight:600;margin-bottom:8px">${a.name}</div><div style="color:#555;line-height:1.7;font-size:13px">${esc(a.desc)}</div></div>
-          <div class="card ph" style="height:140px">应用图示</div>
+          <div class="card ph app-main-media">${a.mainImageUrl ? `<img class="media-img" src="${esc(a.mainImageUrl)}" alt="${esc(a.name)}">` : '应用图示'}</div>
           <div class="st">相关推文</div><div class="hscroll">${a.articles.map(t => `<div class="art" data-act="article" data-t="${esc(t)}"><div class="ph">推文封面</div><div>${esc(t)}</div></div>`).join('')}</div>
-          <div class="st">应用视频</div><div class="card ph" style="height:180px"><div class="play">▶</div>应用视频</div>
+          <div class="st">应用视频</div>${a.videoFileUrl ? `<div class="card"><video class="app-video" src="${esc(a.videoFileUrl)}" ${a.videoCoverUrl || a.mainImageUrl ? `poster="${esc(a.videoCoverUrl || a.mainImageUrl)}"` : ''} controls playsinline preload="metadata">当前浏览器不支持视频播放</video></div>` : `<div class="card ph" style="height:180px"><div class="play">▶</div>视频待上传</div>`}
           <div class="g2"><div class="file" data-go="kb-doc" data-q='{"id":"${a.singlePageDocId}"}'><span class="fico">PDF</span><div>单页</div><div class="mut" style="font-weight:400">跳转专属知识库</div></div>
           <div class="file" data-go="kb-doc" data-q='{"id":"${a.achDocId}","sales":1}'><span class="fico">ACH</span><div>销售用ACH源文件</div><div class="mut" style="font-weight:400">跳转专属知识库</div></div></div>
         </div>`;
