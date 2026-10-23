@@ -140,6 +140,25 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
 .status { height: 34px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; padding: 0 24px; font-size: 12px; font-weight: 600; background: #fff; }
 .nav { height: 44px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; background: #fff; border-bottom: 1px solid #eee; font-size: 16px; font-weight: 500; }
 .nav .back { position: absolute; left: 6px; top: 0; height: 44px; padding: 0 10px; border: 0; background: none; font-size: 22px; cursor: pointer; color: #111; }
+.nav .sync {
+  position: absolute;
+  right: 98px;
+  top: 7px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #e5e5e5;
+  border-radius: 50%;
+  background: #fff;
+  color: #8A1538;
+  font-size: 19px;
+  line-height: 28px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.nav .sync:disabled {
+  opacity: 0.45;
+}
 .capsule { position: absolute; right: 8px; top: 7px; width: 84px; height: 30px; border: 1px solid #e5e5e5; border-radius: 15px; display: flex; align-items: center; justify-content: space-around; font-size: 13px; color: #111; }
 .body { flex: 1; overflow-y: auto; position: relative; }
 .body::-webkit-scrollbar { width: 0; }
@@ -1329,9 +1348,7 @@ const mediaFileIds = [
     const pageLock = access ? lockFor(access) : null;
     const lock = S.lock || pageLock;
     $('nav').classList.toggle('dark', !!P.dark); document.querySelector('.status').classList.toggle('dark', !!P.dark);
-    $('nav').innerHTML = `${S.stack.length > 1 ? '<button class="back" data-act="back" aria-label="返回">‹</button>' : ''}<span>${esc(cur().q.nav || P.title)}</span><span class="capsule">••• | ◎</span>`;
-    const html = P.render.call(P, f.ps, f.q);
-    const hasBar = P.actionBar && !pageLock;
+    $('nav').innerHTML = `${S.stack.length > 1 ? '<button class="back" data-act="back" aria-label="返回">‹</button>' : ''}<span>${esc(cur().q.nav || P.title)}</span><button class="sync" data-act="sync" aria-label="刷新后台数据">↻</button><span class="capsule">••• | ◎</span>`;
     const body = $('body');
     const top = body.scrollTop;
     body.innerHTML = `<div class="${lock ? 'blurred' : ''}">${html}</div>`;
@@ -1372,7 +1389,7 @@ const mediaFileIds = [
     S.lock = null; S.overlay = null; render();
   }
 
-  document.addEventListener('click', e => {
+  document.addEventListener('click',async e => {
     const t = e.target.closest('[data-act],[data-go],[data-tab],[data-role],[data-toc]');
     if (!t) return;
     const d = t.dataset, f = cur();
@@ -1382,6 +1399,19 @@ const mediaFileIds = [
     if (d.go) return go(d.go, d.q ? JSON.parse(d.q) : (d.go === 'inquiry' && f.ps.consultQ ? f.ps.consultQ : undefined));
     switch (d.act) {
       case 'back': return back();
+      case 'sync': {
+  if (t.disabled) return;
+
+  t.disabled = true;
+  toast('正在获取最新内容…');
+
+  await syncIndustriesFromCloudBase();
+
+  const syncButton = document.querySelector('.nav .sync');
+  if (syncButton) syncButton.disabled = false;
+
+  return toast('内容已更新');
+}
       case 'module':
         if (d.k === 'mall') return go('mall');
         if (d.k === 'event') return go('custom', { id: 'event2026' });
