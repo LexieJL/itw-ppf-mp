@@ -1349,6 +1349,8 @@ const mediaFileIds = [
     const lock = S.lock || pageLock;
     $('nav').classList.toggle('dark', !!P.dark); document.querySelector('.status').classList.toggle('dark', !!P.dark);
     $('nav').innerHTML = `${S.stack.length > 1 ? '<button class="back" data-act="back" aria-label="返回">‹</button>' : ''}<span>${esc(cur().q.nav || P.title)}</span><button class="sync" data-act="sync" aria-label="刷新后台数据">↻</button><span class="capsule">••• | ◎</span>`;
+    const html = P.render.call(P, f.ps, f.q);
+    const hasBar = P.actionBar && !pageLock;
     const body = $('body');
     const top = body.scrollTop;
     body.innerHTML = `<div class="${lock ? 'blurred' : ''}">${html}</div>`;
