@@ -1,3 +1,7 @@
+<!doctype html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://static.cloudbase.net/cloudbase-js-sdk/2.28.6/cloudbase.full.js"></script>
 <title>ITW PPF 小程序原型</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&display=swap">
@@ -33,6 +37,71 @@
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); font-size: 14px; }
 .wrap { display: flex; gap: 32px; justify-content: center; align-items: flex-start; padding-block: 28px 48px; padding-inline: 16px; max-width: 1180px; margin: 0 auto; }
+/* ---------- 客户演示模式 ---------- */
+
+/* 电脑打开：隐藏说明区，居中显示手机模拟器 */
+.client-view body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+.client-view .panel {
+  display: none;
+}
+.client-view .status {
+  display: none;
+}  
+
+.client-view .wrap {
+  min-height: 100vh;
+  max-width: none;
+  margin: 0;
+  padding: 20px 16px;
+  justify-content: center;
+  align-items: center;
+}
+
+.client-view .stage {
+  position: static;
+}
+
+/* 手机扫码打开：去掉模拟器外框，网页全屏显示 */
+@media (max-width: 600px) {
+  html.client-view,
+  .client-view body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .client-view .wrap {
+    width: 100%;
+    height: 100dvh;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .client-view .stage {
+    width: 100%;
+    height: 100%;
+  }
+
+  .client-view .phone {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    min-height: 0;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: #f6f6f7;
+  }
+
+  .client-view .screen {
+    border-radius: 0;
+  }
+}
 .panel { flex: 1 1 420px; min-width: 0; max-width: 520px; display: flex; flex-direction: column; gap: 16px; }
 .stage { flex: 0 0 auto; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 20px); }
 @media (max-width: 860px) {
@@ -71,6 +140,25 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
 .status { height: 34px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; padding: 0 24px; font-size: 12px; font-weight: 600; background: #fff; }
 .nav { height: 44px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; background: #fff; border-bottom: 1px solid #eee; font-size: 16px; font-weight: 500; }
 .nav .back { position: absolute; left: 6px; top: 0; height: 44px; padding: 0 10px; border: 0; background: none; font-size: 22px; cursor: pointer; color: #111; }
+.nav .sync {
+  position: absolute;
+  right: 98px;
+  top: 7px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #e5e5e5;
+  border-radius: 50%;
+  background: #fff;
+  color: #8A1538;
+  font-size: 19px;
+  line-height: 28px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.nav .sync:disabled {
+  opacity: 0.45;
+}
 .capsule { position: absolute; right: 8px; top: 7px; width: 84px; height: 30px; border: 1px solid #e5e5e5; border-radius: 15px; display: flex; align-items: center; justify-content: space-around; font-size: 13px; color: #111; }
 .body { flex: 1; overflow-y: auto; position: relative; }
 .body::-webkit-scrollbar { width: 0; }
@@ -84,6 +172,9 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
 .card { background: #fff; border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
 .cp { padding: 14px; }
 .ph { background: linear-gradient(135deg, #efe7ea, #dccfd4); color: #7a5a66; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-size: 12px; }
+.media-img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.app-main-media { height: 140px; }
+.app-video { width: 100%; height: 180px; display: block; object-fit: cover; background: #111; }
 .play { width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,.45); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 6px; }
 .st { font-size: 15px; font-weight: 600; margin: 18px 0 9px; }
 .mut { color: #888; font-size: 12px; }
@@ -341,6 +432,364 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
     ['wind', '风能', ['复合材料', '维修与保养', '海上基础灌浆', '陆地基础灌浆']],
     ['marine', '船舶', ['环氧垫片', 'LPG/LNG船舶']]
   ].map(([id, name, subs]) => ({ id, name, subs: subs.map((n, i) => ({ id: id + '-' + i, name: n, desc: name + ' · ' + n + '：总体应用文字描述。这里介绍该细分领域的典型工况、常见问题和 ITW PPF 的整体解决思路（测试内容）。' })) }));
+   // 从 CloudBase 后台同步行业名称
+  const CLOUDBASE_ENV_ID = 'miniprogram-2026-d7e2q4t739a5d49';
+  const CLOUDBASE_PUBLISHABLE_KEY = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjlkMWRjMzFlLWI0ZDAtNDQ4Yi1hNzZmLWIwY2M2M2Q4MTQ5OCJ9.eyJpc3MiOiJodHRwczovL21pbmlwcm9ncmFtLTIwMjYtZDdlMnE0dDczOWE1ZDQ5LmFwLXNoYW5naGFpLnRjYi1hcGkudGVuY2VudGNsb3VkYXBpLmNvbSIsInN1YiI6ImFub24iLCJhdWQiOiJtaW5pcHJvZ3JhbS0yMDI2LWQ3ZTJxNHQ3MzlhNWQ0OSIsImV4cCI6NDA5NjMzODkyMywiaWF0IjoxNzkyNjU1NzIzLCJub25jZSI6Iks5dWR6SEdjU3hPSEJqX3ZaZ3oyN0EiLCJhdF9oYXNoIjoiSzl1ZHpIR2NTeE9IQmpfdlpnejI3QSIsIm5hbWUiOiJBbm9ueW1vdXMiLCJzY29wZSI6ImFub255bW91cyIsInByb2plY3RfaWQiOiJtaW5pcHJvZ3JhbS0yMDI2LWQ3ZTJxNHQ3MzlhNWQ0OSIsIm1ldGEiOnsicGxhdGZvcm0iOiJQdWJsaXNoYWJsZUtleSJ9LCJ1c2VyX3R5cGUiOiIiLCJjbGllbnRfdHlwZSI6ImNsaWVudF91c2VyIiwiaXNfc3lzdGVtX2FkbWluIjpmYWxzZX0.qqtFLgiLp4oh8uW7SBWF3Tvmam9ByDbVLhq1t-D5Bh_9__6-6daUQ5mxlMWnZJ4SbNF2hotzb8KkygKmo8gz1Oux1an0n9z6DBM-Uh4Qhf7t6tGaZPOQzRyWYmG9iZtbO01hRhq5oCfOcSBRL2rdu3csxyVXI30wh-XzB3_t4cwu4sz0QSoNUptzToWyOOU2LeaTIVmhPiKzR6vjYWyVGf-BmsnEJ049pxqfCLK4vgC2JCi4XFMOlvH6mVmdXjNaqUlBHmGp7R1VGdh0Ysmdh897T-4yaJN1Fbo79r81jU4pDlZFf76gN007TubxKo70LmWPb3A8N6f6m1h8l5WrEw';
+
+  const CLOUD_INDUSTRY_IDS = {
+    transportation: 'traffic',
+    electronics: 'electronics',
+    automotive: 'auto',
+    heavy_industry: 'heavy',
+    fluids: 'fluid',
+    wind_energy: 'wind',
+    marine: 'marine'
+  };
+
+    async function syncIndustriesFromCloudBase() {
+    try {
+      const cloudApp = cloudbase.init({
+        env: CLOUDBASE_ENV_ID,
+        region: 'ap-shanghai',
+        accessKey: CLOUDBASE_PUBLISHABLE_KEY
+      });
+
+      const [
+        industryResult,
+        categoryResult,
+        applicationResult,
+        resourceResult
+      ] =
+        await Promise.all([
+          cloudApp.models.industries.list({
+            filter: { where: {} },
+            pageSize: 100,
+            pageNumber: 1,
+            getCount: false
+          }),
+          cloudApp.models.application_categories.list({
+            filter: { where: {} },
+            pageSize: 100,
+            pageNumber: 1,
+            getCount: false
+          }),
+          cloudApp.models.applications.list({
+            filter: { where: {} },
+            pageSize: 100,
+            pageNumber: 1,
+            getCount: false
+          }),
+          cloudApp.models.application_resources.list({
+            filter: { where: {} },
+            pageSize: 100,
+            pageNumber: 1,
+            getCount: false
+          })
+        ]);
+
+      if (industryResult.error) throw industryResult.error;
+      if (categoryResult.error) throw categoryResult.error;
+      if (applicationResult.error) throw applicationResult.error;
+      if (resourceResult.error) throw resourceResult.error;
+
+      const industryRecords =
+        industryResult.data?.records || [];
+
+      const categoryRecords =
+        categoryResult.data?.records || [];
+
+      const applicationRecords =
+        applicationResult.data?.records || [];
+      
+      const resourceRecords =
+        resourceResult.data?.records || [];
+
+      const relationId = (record, field) => {
+        const value = record[field];
+
+        if (typeof value === 'string') {
+          return value;
+        }
+
+        return (
+          value?._id ||
+          record['@' + field]?.v1?.record?._id ||
+          null
+        );
+      };
+            // 兼容字符串、数组、对象和 JSON 字符串形式的媒体字段
+      const mediaFileId = value => {
+        if (!value) return '';
+
+        if (typeof value === 'string') {
+          const text = value.trim();
+
+          if (
+            (text.startsWith('{') && text.endsWith('}')) ||
+            (text.startsWith('[') && text.endsWith(']'))
+          ) {
+            try {
+              return mediaFileId(JSON.parse(text));
+            } catch (_) {
+              return text;
+            }
+          }
+
+          return text;
+        }
+
+        if (Array.isArray(value)) {
+          return mediaFileId(value[0]);
+        }
+
+        if (typeof value === 'object') {
+          return mediaFileId(
+            value.fileID ||
+            value.fileId ||
+            value.cloudPath ||
+            value.tempFileURL ||
+            value.download_url ||
+            value.url ||
+            value.value ||
+            ''
+          );
+        }
+
+        return '';
+      };
+
+      // 收集所有需要转换的 cloud:// 图片和视频地址
+const mediaFileIds = [
+  ...new Set(
+    applicationRecords
+      .flatMap(item => [
+        mediaFileId(item.mainImage),
+        mediaFileId(item.videoFile),
+        mediaFileId(item.videoCover)
+      ])
+      .concat(
+        resourceRecords.flatMap(item => [
+          mediaFileId(item.coverImage),
+          mediaFileId(item.resourceFile)
+        ])
+      )
+      .filter(fileId => fileId.startsWith('cloud://'))
+  )
+];
+
+      const mediaUrlByFileId = new Map();
+
+      // 将 cloud:// 地址批量转换成网页可显示的 HTTPS 地址
+      if (mediaFileIds.length > 0) {
+        try {
+          const mediaResult = await cloudApp.getTempFileURL({
+            fileList: mediaFileIds
+          });
+
+          const mediaList =
+            mediaResult.fileList ||
+            mediaResult.data?.fileList ||
+            [];
+
+          mediaList.forEach(file => {
+            const fileId =
+              file.fileID ||
+              file.fileId ||
+              file.cloudPath;
+
+            const url =
+              file.tempFileURL ||
+              file.download_url ||
+              file.url;
+
+            if (fileId && url) {
+              mediaUrlByFileId.set(fileId, url);
+            }
+          });
+        } catch (mediaError) {
+          console.error(
+            'CloudBase media URL conversion failed:',
+            mediaError
+          );
+        }
+      }
+
+      const mediaUrl = value => {
+        const fileId = mediaFileId(value);
+
+        if (!fileId) return '';
+        if (/^https?:\/\//i.test(fileId)) return fileId;
+
+        return mediaUrlByFileId.get(fileId) || '';
+      };
+
+      // 第一层：行业
+      industryRecords
+        .filter(item => item.visible !== false)
+        .forEach(item => {
+          const previewId = CLOUD_INDUSTRY_IDS[item.code];
+          const industry = INDUSTRIES.find(
+            row => row.id === previewId
+          );
+
+          if (industry) {
+            industry._cloudId = item._id;
+
+            if (item.name) {
+              industry.name = item.name;
+            }
+          }
+        });
+
+      const prefixToIndustry = {
+        traffic: 'traffic',
+        electronics: 'electronics',
+        auto: 'auto',
+        heavy: 'heavy',
+        fluid: 'fluid',
+        wind: 'wind',
+        marine: 'marine'
+      };
+
+      const counters = {};
+
+      // 第二层：应用分类
+      categoryRecords
+        .filter(item => item.visible !== false)
+        .sort(
+          (a, b) =>
+            Number(a.sort || 0) - Number(b.sort || 0)
+        )
+        .forEach(item => {
+          const industryRecordId =
+            relationId(item, 'industry');
+
+          let industry = INDUSTRIES.find(
+            row => row._cloudId === industryRecordId
+          );
+
+          // 兼容关联字段没有随查询返回的情况
+          if (!industry && item.code) {
+            const prefix = item.code.split('_')[0];
+            const previewId = prefixToIndustry[prefix];
+
+            industry = INDUSTRIES.find(
+              row => row.id === previewId
+            );
+          }
+
+          if (!industry) return;
+
+          const index = counters[industry.id] || 0;
+          const sub = industry.subs[index];
+
+          if (!sub) return;
+
+          sub._cloudId = item._id;
+          sub.id = item.code || sub.id;
+          sub.name = item.name || sub.name;
+          sub.desc = item.description || sub.desc;
+
+          counters[industry.id] = index + 1;
+        });
+
+      // 第三层：真实应用
+      if (applicationRecords.length > 0) {
+        APPS.splice(0, APPS.length);
+
+        applicationRecords
+          .filter(item => item.visible !== false)
+          .sort(
+            (a, b) =>
+              Number(a.sort || 0) - Number(b.sort || 0)
+          )
+          .forEach(item => {
+            const categoryRecordId =
+              relationId(item, 'applicationCategory');
+
+            const sub = INDUSTRIES
+              .flatMap(industry => industry.subs)
+              .find(
+                category =>
+                  category._cloudId === categoryRecordId
+              );
+
+            if (!sub) return;
+
+            const industry = INDUSTRIES.find(
+              row => row.subs.includes(sub)
+            );
+
+            APPS.push({
+              id: item.code || item._id,
+              cloudId: item._id,
+              ind: industry,
+              sub: sub,
+              name: item.name || '未命名应用',
+              desc: item.description || '',
+              mainImage: mediaFileId(item.mainImage),
+              mainImageUrl: mediaUrl(item.mainImage),
+              videoFile: mediaFileId(item.videoFile),
+              videoFileUrl: mediaUrl(item.videoFile),
+              videoCover: mediaFileId(item.videoCover),
+              videoCoverUrl: mediaUrl(item.videoCover),
+              articles: [],
+              resources: [],
+              singlePageDocId: null,
+              achDocId: null,
+              access: 'certified'
+            });
+          });
+                // 第四层：应用关联资源（推文、视频、单页资料、ACH）
+        resourceRecords
+          .filter(item => item.visible !== false)
+          .sort(
+            (a, b) =>
+              Number(a.sort || 0) - Number(b.sort || 0)
+          )
+          .forEach(item => {
+            const applicationRecordId =
+              relationId(item, 'application');
+
+            const application = APPS.find(
+              app => app.cloudId === applicationRecordId
+            );
+
+            if (!application) return;
+
+            application.resources.push({
+              id: item.code || item._id,
+              cloudId: item._id,
+              title: item.title || '未命名资源',
+              summary: item.summary || '',
+              kind: item.resourceKind || '',
+              coverImage: mediaFileId(item.coverImage),
+              coverImageUrl: mediaUrl(item.coverImage),
+              resourceFile: mediaFileId(item.resourceFile),
+              resourceFileUrl: mediaUrl(item.resourceFile),
+              externalUrl: item.externalUrl || '',
+              access: item.accessScope || 'certified',
+              sort: Number(item.sort || 0)
+            });
+          });
+      }
+
+      render();
+
+      console.log(
+        'CloudBase catalog synchronized:',
+        industryRecords.length,
+        categoryRecords.length,
+        applicationRecords.length,
+        resourceRecords.length
+      );
+    } catch (error) {
+      console.error(
+        'CloudBase catalog synchronization failed:',
+        error
+      );
+    }
+  }   
   const BANNERS = [
     { title: '新品发布｜Devcon 高性能修补剂', sub: '金属修复 · 耐磨防护 · 快速固化', bg: 'linear-gradient(120deg,#5e0022 0%,#8A1538 55%,#b3264f 100%)' },
     { title: '行业方案｜风电叶片维修全流程', sub: '从现场检测到修复验收', bg: 'linear-gradient(120deg,#2b1d24 0%,#5b1830 55%,#8A1538 100%)' },
@@ -410,6 +859,29 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
   const NEED = { public: 0, registered: 1, certified: 2, staff: 3 };
   const ROLE_NAME = { guest: '游客', member: '普通会员', certified: '认证会员', staff: 'ITW PPF员工' };
   const S = { user: { role: 'guest' }, favs: [], stack: [], lock: null, lockClosable: false, overlay: null, banner: 0, ps: {} };
+    const CLIENT_PARAMS =
+    new URLSearchParams(window.location.search);
+
+  const CLIENT_ROLE =
+    CLIENT_PARAMS.get('role');
+
+  if (CLIENT_PARAMS.get('demo') === '1') {
+    document.documentElement.classList.add('client-view');
+  }
+
+  if (
+    ['guest', 'member', 'certified', 'staff']
+      .includes(CLIENT_ROLE)
+  ) {
+    Object.assign(S.user, {
+      role: CLIENT_ROLE,
+      certStatus: '',
+      name: '演示用户',
+      phone: '13800000000',
+      company: 'ITW PPF 演示',
+      email: 'demo@example.com'
+    });
+  }
   const can = a => LEVEL[S.user.role] >= NEED[a || 'public'];
   function lockFor(a) {
     if (can(a)) return null;
@@ -455,7 +927,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
         const sub = INDUSTRIES[st.ind].subs[st.sub];
         const apps = APPS.filter(a => a.sub === sub);
         return industryNav(st, `<div class="card cp"><div style="font-weight:600;margin-bottom:6px">${INDUSTRIES[st.ind].name} · ${esc(sub.name)}</div><div class="mut" style="line-height:1.7">${esc(sub.desc)}</div></div>
-          <div class="g2">${apps.map(a => `<div class="tile" data-go="app-detail" data-q='{"id":"${a.id}"}'><div class="ph">应用图示</div><div class="tt">${a.name}</div><div class="ts">${can('certified') ? '查看详情' : '🔒 认证可见详情'}</div></div>`).join('')}</div>`);
+          <div class="g2">${apps.map(a => `<div class="tile" data-go="app-detail" data-q='{"id":"${a.id}"}'><div class="ph">${a.mainImageUrl ? `<img class="media-img" src="${esc(a.mainImageUrl)}" alt="${esc(a.name)}" loading="lazy">` : '应用图示'}</div><div class="tt">${esc(a.name)}</div><div class="ts">${can('certified') ? '查看详情' : '🔒 认证可见详情'}</div></div>`).join('')}</div>`);
       } },
 
     'app-detail': { title: '应用库', ppt: '5–6', vis: () => can('certified') ? ['ok', '有权限用户的进入界面'] : ['no', '无权限用户的进入界面'],
@@ -463,16 +935,121 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
       render(st, q) {
         const a = byId(APPS, q.id) || APPS[0];
         const crumb = [a.ind.name, a.sub.name, a.name].join(' > ');
+        const resources = (a.resources || []).filter(
+          resource =>
+            !resource.access ||
+            NEED[resource.access] == null ||
+            can(resource.access)
+        );
+
+        const articleResources = resources.filter(
+          resource => resource.kind === 'article'
+        );
+
+        const articleHtml = articleResources.length
+          ? articleResources
+              .map(
+                resource =>
+                  `<div class="art" data-act="resource" data-url="${esc(
+                    resource.externalUrl ||
+                    resource.resourceFileUrl ||
+                    ''
+                  )}">
+                    <div class="ph">
+                      ${
+                        resource.coverImageUrl
+                          ? `<img class="media-img" src="${esc(
+                              resource.coverImageUrl
+                            )}" alt="${esc(
+                              resource.title
+                            )}" loading="lazy">`
+                          : '推文封面'
+                      }
+                    </div>
+                    <div>${esc(resource.title)}</div>
+                  </div>`
+              )
+              .join('')
+          : (a.articles || [])
+              .map(
+                title =>
+                  `<div class="art" data-act="article" data-t="${esc(
+                    title
+                  )}">
+                    <div class="ph">推文封面</div>
+                    <div>${esc(title)}</div>
+                  </div>`
+              )
+              .join('');
+
+        const videoResource = resources.find(
+          resource => resource.kind === 'video'
+        );
+
+        const videoUrl =
+          a.videoFileUrl ||
+          videoResource?.resourceFileUrl ||
+          '';
+
+        const videoPoster =
+          a.videoCoverUrl ||
+          videoResource?.coverImageUrl ||
+          a.mainImageUrl ||
+          '';
+
+        const fileResources = resources.filter(
+          resource =>
+            resource.kind === 'single_page' ||
+            resource.kind === 'ach'
+        );
+
+        const fileHtml = fileResources.length
+          ? `<div class="g2">${fileResources
+              .map(
+                resource =>
+                  `<div class="file" data-act="resource" data-url="${esc(
+                    resource.resourceFileUrl ||
+                    resource.externalUrl ||
+                    ''
+                  )}">
+                    <span class="fico">${
+                      resource.kind === 'ach' ? 'ACH' : 'PDF'
+                    }</span>
+                    <div>${esc(resource.title)}</div>
+                    <div class="mut" style="font-weight:400">
+                      ${
+                        resource.resourceFileUrl ||
+                        resource.externalUrl
+                          ? '点击查看或下载'
+                          : '文件待上传'
+                      }
+                    </div>
+                  </div>`
+              )
+              .join('')}</div>`
+          : a.cloudId
+            ? '<div class="card cp mut">相关资料待添加</div>'
+            : `<div class="g2">
+                <div class="file" data-go="kb-doc" data-q='{"id":"${a.singlePageDocId}"}'>
+                  <span class="fico">PDF</span>
+                  <div>单页</div>
+                  <div class="mut" style="font-weight:400">跳转专属知识库</div>
+                </div>
+                <div class="file" data-go="kb-doc" data-q='{"id":"${a.achDocId}","sales":1}'>
+                  <span class="fico">ACH</span>
+                  <div>销售用ACH源文件</div>
+                  <div class="mut" style="font-weight:400">跳转专属知识库</div>
+                </div>
+              </div>`;
         st.fav = { type: 'app', id: a.id, title: a.name, sub: crumb, page: 'app-detail', q };
         st.consult = 'inquiry';
         st.consultQ = { tab: 0, app: a.id };
         return `<div class="crumb">${esc(crumb)}</div><div class="pad">
           <div class="card cp"><div style="font-size:18px;font-weight:600;margin-bottom:8px">${a.name}</div><div style="color:#555;line-height:1.7;font-size:13px">${esc(a.desc)}</div></div>
-          <div class="card ph" style="height:140px">应用图示</div>
-          <div class="st">相关推文</div><div class="hscroll">${a.articles.map(t => `<div class="art" data-act="article" data-t="${esc(t)}"><div class="ph">推文封面</div><div>${esc(t)}</div></div>`).join('')}</div>
-          <div class="st">应用视频</div><div class="card ph" style="height:180px"><div class="play">▶</div>应用视频</div>
-          <div class="g2"><div class="file" data-go="kb-doc" data-q='{"id":"${a.singlePageDocId}"}'><span class="fico">PDF</span><div>单页</div><div class="mut" style="font-weight:400">跳转专属知识库</div></div>
-          <div class="file" data-go="kb-doc" data-q='{"id":"${a.achDocId}","sales":1}'><span class="fico">ACH</span><div>销售用ACH源文件</div><div class="mut" style="font-weight:400">跳转专属知识库</div></div></div>
+          <div class="card ph app-main-media">${a.mainImageUrl ? `<img class="media-img" src="${esc(a.mainImageUrl)}" alt="${esc(a.name)}">` : '应用图示'}</div>
+          <div class="st">相关推文</div>${articleHtml ? `<div class="hscroll">${articleHtml}</div>` : '<div class="card cp mut">相关推文待添加</div>'}
+          <div class="st">应用视频</div>${videoUrl ? `<div class="card"><video class="app-video" src="${esc(videoUrl)}" ${videoPoster ? `poster="${esc(videoPoster)}"` : ''} controls playsinline preload="metadata">当前浏览器不支持视频播放</video></div>` : `<div class="card ph" style="height:180px"><div class="play">▶</div>视频待上传</div>`}
+          <div class="st">相关资料</div>${fileHtml}
         </div>`;
       }, actionBar: true },
 
@@ -771,7 +1348,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
     const pageLock = access ? lockFor(access) : null;
     const lock = S.lock || pageLock;
     $('nav').classList.toggle('dark', !!P.dark); document.querySelector('.status').classList.toggle('dark', !!P.dark);
-    $('nav').innerHTML = `${S.stack.length > 1 ? '<button class="back" data-act="back" aria-label="返回">‹</button>' : ''}<span>${esc(cur().q.nav || P.title)}</span><span class="capsule">••• | ◎</span>`;
+    $('nav').innerHTML = `${S.stack.length > 1 ? '<button class="back" data-act="back" aria-label="返回">‹</button>' : ''}<span>${esc(cur().q.nav || P.title)}</span><button class="sync" data-act="sync" aria-label="刷新后台数据">↻</button><span class="capsule">••• | ◎</span>`;
     const html = P.render.call(P, f.ps, f.q);
     const hasBar = P.actionBar && !pageLock;
     const body = $('body');
@@ -814,7 +1391,7 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
     S.lock = null; S.overlay = null; render();
   }
 
-  document.addEventListener('click', e => {
+  document.addEventListener('click',async e => {
     const t = e.target.closest('[data-act],[data-go],[data-tab],[data-role],[data-toc]');
     if (!t) return;
     const d = t.dataset, f = cur();
@@ -824,12 +1401,32 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
     if (d.go) return go(d.go, d.q ? JSON.parse(d.q) : (d.go === 'inquiry' && f.ps.consultQ ? f.ps.consultQ : undefined));
     switch (d.act) {
       case 'back': return back();
+      case 'sync': {
+  if (t.disabled) return;
+
+  t.disabled = true;
+  toast('正在获取最新内容…');
+
+  await syncIndustriesFromCloudBase();
+
+  const syncButton = document.querySelector('.nav .sync');
+  if (syncButton) syncButton.disabled = false;
+
+  return toast('内容已更新');
+}
       case 'module':
         if (d.k === 'mall') return go('mall');
         if (d.k === 'event') return go('custom', { id: 'event2026' });
         if (!can('registered')) { S.lock = lockFor('registered'); S.lockClosable = true; return render(); }
         return go(d.k);
       case 'article': return go('webview', { t: d.t });
+      case 'resource':
+        if (!d.url) return toast('资源内容待上传');
+        if (!/^https?:\/\//i.test(d.url)) {
+          return toast('资源地址暂不可用');
+        }
+        window.open(d.url, '_blank', 'noopener,noreferrer');
+        return;
       case 'weblink': { const L = WEBLINKS[d.k]; if (L.webview) return go('webview', { t: L.name, host: L.host, nav: L.name, site: 1 }); try { navigator.clipboard.writeText(L.url).catch(() => {}); } catch (_) {} return modal('链接已复制', `${L.name}需要在浏览器中打开，请粘贴到浏览器访问。<div class="mut" style="margin-top:8px;word-break:break-all">${L.url}</div>`); }
       case 'maskbg': if (e.target === t && S.lock && S.lockClosable) { S.lock = null; render(); } return;
       case 'lockclose': S.lock = null; return render();
@@ -945,5 +1542,6 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
 
   S.stack = [frame('index')];
   render(true);
+  syncIndustriesFromCloudBase();
 })();
 </script>
