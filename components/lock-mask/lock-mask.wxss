@@ -9,8 +9,8 @@
 .later { margin-top: 20rpx; color: #999; font-size: 26rpx; }
 
 
-.preview-mask { top: auto; bottom: 0; height: 38vh; padding: 80rpx 32rpx 24rpx; box-sizing: border-box; align-items: flex-end; background: linear-gradient(to bottom, transparent, #f6f6f8 28%); }
-.preview-mask .dialog { width: 100%; padding: 32rpx; box-sizing: border-box; box-shadow: 0 8rpx 40rpx rgba(0,0,0,.06); }
-.preview-mask .text { font-size: 30rpx; }
-.preview-mask .btn { margin-top: 24rpx; }
-.peek-caption { font-size: 24rpx; color: #888; margin-bottom: 12rpx; }
+.preview-mask { top:0; bottom:0; height:auto; padding:48rpx; box-sizing:border-box; align-items:center; background:linear-gradient(to bottom,transparent 25%,rgba(246,246,248,.22) 38%,rgba(246,246,248,.78) 61%,#f6f6f8 88%); }
+.preview-mask .dialog { width:504rpx; max-width:100%; padding:44rpx 40rpx 40rpx; box-sizing:border-box; border-radius:32rpx; box-shadow:0 16rpx 56rpx rgba(45,20,30,.09); transform:translateY(12%); }
+.preview-mask .text { font-size:34rpx; font-weight:600; line-height:1.5; }
+.preview-mask .btn { margin-top:36rpx; }
+.peek-caption { font-size:24rpx; color:#888; margin-top:16rpx; line-height:1.6; }

@@ -166,13 +166,16 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
 .tabbar button { flex: 1; border: 0; background: none; font: inherit; font-size: 11px; color: #777; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
 .tabbar button .ti { font-size: 18px; line-height: 1; }
 .tabbar button.on { color: #8A1538; font-weight: 600; }
-.library-peek { height: 370px; max-height: calc(58vh - 50px); min-height: 230px; overflow: hidden; pointer-events: none; user-select: none; }
-.mask.library-mask { top: auto; bottom: 60px; height: 38%; padding: 42px 20px 16px; align-items: flex-end; background: linear-gradient(to bottom, transparent, #f6f6f8 28%); }
-.library-mask .dlg { width: 100%; padding: 18px 20px; box-shadow: 0 4px 20px rgba(0,0,0,.06); }
-.library-mask .ic { display: none; }
-.library-mask .tx { font-size: 17px; }
-.library-mask .btnp { margin-top: 14px; }
-.peek-caption { color: #888; font-size: 12px; margin-bottom: 8px; }
+.library-peek { pointer-events: none; user-select: none; }
+.library-peek .bintro { -webkit-line-clamp: 1; }
+.library-peek .bcard .more { display:none; }
+.library-peek .tile .ph { height:64px; }
+.mask.library-mask { top: 88px; bottom: 54px; height:auto; padding:24px; align-items:center; background:linear-gradient(to bottom,transparent 25%,rgba(246,246,248,.22) 38%,rgba(246,246,248,.78) 61%,#f6f6f8 88%); }
+.mask.library-mask .dlg { width:252px; max-width:100%; padding:22px 20px 20px; border-radius:16px; box-shadow:0 8px 28px rgba(45,20,30,.09); transform:translateY(12%); }
+.library-mask .ic { display:none; }
+.mask.library-mask .tx { font-size:17px; font-weight:600; line-height:1.5; }
+.mask.library-mask .peek-caption { margin:8px 0 0; color:#888; font-size:12px; line-height:1.6; }
+.mask.library-mask .btnp { margin-top:18px; height:40px; font-size:14px; }
 .blurred { filter: blur(6px); pointer-events: none; user-select: none; }
 .pad { padding: 12px 16px 120px; }
 .crumb { font-size: 12px; color: #888; padding: 10px 16px 2px; }
@@ -1558,7 +1561,7 @@ const mediaFileIds = [
     $('tabbar').hidden = !isTab;
     $('tabbar').innerHTML = TABS.map(t => `<button class="${t[0] === f.page ? 'on' : ''}" data-tab="${t[0]}"><span class="ti">${t[2]}</span><span>${t[1]}</span></button>`).join('');
     const askBar = f.page === 'faq' && !pageLock && !f.ps.asking ? '<div class="askbar"><button class="btnp" style="margin:0" data-act="ask">我要提问</button></div>' : '';
-    $('overlay').innerHTML = askBar + (hasBar ? actionBar(f.ps.fav, CONSULT[f.page] ? 'inquiry' : '') : '') + floatBar(isTab ? 70 : hasBar ? 76 : askBar ? 90 : 24) + (lock ? `<div class="mask ${teaser ? 'library-mask' : ''}" data-act="maskbg"><div class="dlg"><div class="ic">🔒</div>${teaser ? '<div class="peek-caption">以上为内容预览</div>' : ''}<div class="tx">${lock.pre}<span class="lk" data-act="lockgo">${lock.link}</span>${lock.post}</div><button class="btnp" data-act="lockgo">${lock.link === '注册' ? '立即注册' : '前往' + lock.link}</button>${S.lock && S.lockClosable ? '<button class="later" data-act="lockclose">暂不</button>' : ''}</div></div>` : '') + (S.overlay || '');
+    $('overlay').innerHTML = askBar + (hasBar ? actionBar(f.ps.fav, CONSULT[f.page] ? 'inquiry' : '') : '') + floatBar(isTab ? 70 : hasBar ? 76 : askBar ? 90 : 24) + (lock ? `<div class="mask ${teaser ? 'library-mask' : ''}" data-act="maskbg"><div class="dlg"><div class="ic">🔒</div>${teaser ? '<div class="tx">注册会员，发现更多</div><div class="peek-caption">继续浏览，了解更多应用与产品</div>' : `<div class="tx">${lock.pre}<span class="lk" data-act="lockgo">${lock.link}</span>${lock.post}</div>`}<button class="btnp" data-act="lockgo">${lock.link === '注册' ? '立即注册' : '前往' + lock.link}</button>${S.lock && S.lockClosable ? '<button class="later" data-act="lockclose">暂不</button>' : ''}</div></div>` : '') + (S.overlay || '');
     S.curLock = lock;
     renderPanel(P, f);
   }

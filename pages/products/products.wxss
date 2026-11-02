@@ -29,4 +29,8 @@
 .more { margin-top: 8rpx; font-size: 22rpx; color: #8A1538; text-align: right; }
 
 
-.library-peek { height: 58vh; overflow: hidden; pointer-events: none; }
+.library-peek { pointer-events: none; }
+
+.library-peek .brand-intro { -webkit-line-clamp:1; }
+.library-peek .more { display:none; }
+.library-peek .prod-img { height:128rpx; }

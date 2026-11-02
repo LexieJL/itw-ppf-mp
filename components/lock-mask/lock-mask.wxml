@@ -1,8 +1,9 @@
 <view wx:if="{{lock}}" class="mask {{preview ? 'preview-mask' : ''}}" bindtap="onMask" catchtouchmove="noop">
   <view class="dialog" catchtap="noop">
-    <view wx:if="{{preview}}" class="peek-caption">以上为内容预览</view>
+    <view wx:if="{{preview}}" class="text">注册会员，发现更多</view>
+    <view wx:if="{{preview}}" class="peek-caption">继续浏览，了解更多应用与产品</view>
     <view wx:if="{{!preview}}" class="icon">🔒</view>
-    <view class="text">{{lock.pre}}<text class="link" bindtap="go">{{lock.link}}</text>{{lock.post}}</view>
+    <view wx:if="{{!preview}}" class="text">{{lock.pre}}<text class="link" bindtap="go">{{lock.link}}</text>{{lock.post}}</view>
     <view class="btn" bindtap="go">{{lock.link === '注册' ? '立即注册' : '前往' + lock.link}}</view>
     <view wx:if="{{closable}}" class="later" bindtap="close">暂不</view>
   </view>
