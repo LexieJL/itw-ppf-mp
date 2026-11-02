@@ -1,10 +1,16 @@
 <view class="breadcrumb">{{crumb}}</view>
-<view class="container {{lock ? 'blurred' : ''}}">
+<view class="container">
   <view class="card card-pad">
     <view class="title">{{app.name}}</view>
-    <view class="desc">{{app.desc}}</view>
+    <view class="desc">{{restricted ? publicSummary : app.desc}}</view>
   </view>
-  <view class="card ph diagram">应用图示</view>
+  <image wx:if="{{cover}}" class="card diagram app-cover" src="{{cover}}" mode="aspectFit" /><view wx:else class="card ph diagram">应用图示</view>
+
+  <view wx:if="{{restricted}}" class="preview-gate">
+    <view class="preview-fade" aria-hidden="true"><view class="preview-line"></view><view class="preview-line short"></view><view class="preview-line"></view></view>
+    <view class="gate-content"><view class="gate-title">{{gate.title}}</view><view class="gate-text">{{gate.text}}</view><button class="gate-button" bindtap="unlock">{{gate.button}}</button><view class="gate-back" bindtap="backToApps">继续浏览应用</view></view>
+  </view>
+  <block wx:else>
 
   <view wx:if="{{articles.length}}" class="section-title">相关推文</view>
   <scroll-view scroll-x class="articles" enhanced show-scrollbar="{{false}}">
@@ -30,8 +36,9 @@
       <view class="muted">跳转专属知识库</view>
     </view>
   </view>
+  </block>
 </view>
-<action-bar wx:if="{{!lock}}" item="{{favItem}}" consult="{{consultUrl}}" />
-<lock-mask lock="{{lock}}" />
+<action-bar wx:if="{{!restricted}}" item="{{favItem}}" consult="{{consultUrl}}" />
+
 <float-bar bottom="{{160}}" />
 

@@ -5,7 +5,7 @@ const root=path.join(__dirname,'..')
 const file=path.join(root,'preview.html')
 let html=fs.readFileSync(file,'utf8')
 let block='<script>\nwindow.ITW_FRONTEND = {};\n'
-for(const name of ['markets','resources','search','cms'])block+='{ const module = {exports:{}};\n'+fs.readFileSync(path.join(root,'utils',name+'.js'),'utf8')+'\nwindow.ITW_FRONTEND.'+name+' = module.exports; }\n'
+for(const name of ['markets','resources','search','cms','app-preview'])block+='{ const module = {exports:{}};\n'+fs.readFileSync(path.join(root,'utils',name+'.js'),'utf8')+'\nwindow.ITW_FRONTEND['+JSON.stringify(name)+'] = module.exports; }\n'
 block+='</script>'
 const start=html.indexOf('<script>\nwindow.ITW_FRONTEND = {};')
 if(start<0)throw new Error('Missing shared config marker')

@@ -14,6 +14,6 @@ Page({
  },
  group(g,n){return {...g,more:g.count>n,list:g.list.slice(0,n).map((r,i)=>({...r,key:g.name+i,locked:!auth.can(r.access),url:'/pages/'+r.page+'/'+r.page+'?id='+encodeURIComponent(r.id)}))}},
  more(e){const i=Number(e.currentTarget.dataset.i);const groups=this.data.groups.slice();groups[i]=this.group(this.results[i],groups[i].list.length+LIMIT);this.setData({groups})},
- open(e){const {i,j}=e.currentTarget.dataset;const r=this.data.groups[i].list[j];if(!auth.can(r.access))return this.setData({lock:auth.lockFor(r.access)});wx.navigateTo({url:r.url})},
+ open(e){const {i,j}=e.currentTarget.dataset;const r=this.data.groups[i].list[j];if(r.page!=='app-detail'&&!auth.can(r.access))return this.setData({lock:auth.lockFor(r.access)});wx.navigateTo({url:r.url})},
  closeLock(){this.setData({lock:null})}
 })

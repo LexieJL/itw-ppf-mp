@@ -11,7 +11,7 @@ const HOME = {
   ],
   // icon 对应 images/icons/<icon>.svg；color 主色、tint 浅底色
   modules: [
-    { key: 'apps', name: '应用库', sub: '按行业查找应用方案', icon: 'apps', color: '#8A1538', tint: '#f8e6ec', access: 'registered', visible: true, link: { type: 'tab', url: '/pages/apps/apps' } },
+    { key: 'apps', name: '应用库', sub: '按行业查找应用方案', icon: 'apps', color: '#8A1538', tint: '#f8e6ec', access: 'public', visible: true, link: { type: 'tab', url: '/pages/apps/apps' } },
     { key: 'products', name: '产品库', sub: '品牌 · 系列 · 规格', icon: 'products', color: '#a8325e', tint: '#f9e9ef', access: 'registered', visible: true, link: { type: 'tab', url: '/pages/products/products' } },
     { key: 'kb', name: '专属知识库', sub: '公司介绍 · 产品培训', icon: 'kb', color: '#5b1830', tint: '#f2e6ea', access: 'registered', visible: true, link: { type: 'page', url: '/pages/kb/kb' } },
     { key: 'inquiry', name: '需求咨询', sub: '样品 · 上门 · 问询', icon: 'inquiry', color: '#c2185b', tint: '#fbe7ef', access: 'registered', visible: true, link: { type: 'page', url: '/pages/inquiry/inquiry' } },

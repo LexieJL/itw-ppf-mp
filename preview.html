@@ -349,6 +349,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui); fon
 @media (prefers-reduced-motion: reduce) { .slides { transition: none; } }
 
 .market-multi{padding:12px 14px}.market-label{font-size:13px;margin-bottom:12px;color:#555}.market-multi details{border-bottom:1px solid #eee;padding:10px 0}.market-multi summary{cursor:pointer;font-size:14px}.market-options{display:flex;flex-wrap:wrap;gap:10px;padding-top:12px}.market-options label{font-size:13px;display:flex;gap:5px;align-items:center}.market-summary{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}.market-summary button{font:inherit;font-size:12px;background:#f8e8ee;border:1px solid #e4b7c6;color:#8a1538;border-radius:8px;padding:6px;text-align:left}.module-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.mod .mi,.mod .mn,.mod .ms{position:relative}.banner{touch-action:pan-y}.video-error{font-size:13px;color:#8a1538}
+
+.preview-title{font-size:18px;font-weight:600;line-height:1.5;color:#391324}.preview-summary{font-size:14px;line-height:1.8;color:#666;margin:10px 0 18px}.preview-gate{background:#fff;border-radius:16px;overflow:hidden;margin-top:16px}.preview-fade{height:75px;padding:20px 20px 0;position:relative;overflow:hidden}.preview-fade i{display:block;height:7px;background:#e6e1e3;border-radius:5px;margin-bottom:13px}.preview-fade i:nth-child(2){width:70%}.preview-fade:after{content:'';position:absolute;inset:0;background:linear-gradient(transparent,#fff)}.gate-content{text-align:center;padding:6px 20px 20px}.gate-back{border:0;background:transparent;color:#777;font:inherit;font-size:14px;padding:16px 0 0;cursor:pointer}
 </style>
 
 <div class="wrap">
@@ -443,7 +445,7 @@ function selection(ids) {
 function pair(marketId,segmentId) { return selection([segmentId]).find(s=>s.marketId===marketId) || null }
 module.exports = { MARKETS, selection, pair }
 
-window.ITW_FRONTEND.markets = module.exports; }
+window.ITW_FRONTEND["markets"] = module.exports; }
 { const module = {exports:{}};
 // 将单个地址、数组和云端媒体对象展开，避免只读取第一条。
 function urls(value) {
@@ -475,7 +477,7 @@ function productVideos(item,can=()=>true) {
 }
 module.exports={urls,videos,articles,documents,productVideos}
 
-window.ITW_FRONTEND.resources = module.exports; }
+window.ITW_FRONTEND["resources"] = module.exports; }
 { const module = {exports:{}};
 // 只索引页面文本/资源元数据，不抓取附件、外部推文或视频内部内容。
 function text(value) {if(Array.isArray(value))return value.map(text).join(' ');if(value&&typeof value==='object')return Object.values(value).map(text).join(' ');return String(value==null?'':value)}
@@ -504,7 +506,7 @@ function search(data,keyword) {
 }
 module.exports={search,matches,productText}
 
-window.ITW_FRONTEND.search = module.exports; }
+window.ITW_FRONTEND["search"] = module.exports; }
 { const module = {exports:{}};
 // 本地前端配置。修改后需重新构建/发布；后台配置接口留待后续接入。
 // 正式版这些数据存在 CloudBase，由运营在后台用预制控件新增、排序、隐藏、设置跳转和权限。
@@ -519,7 +521,7 @@ const HOME = {
   ],
   // icon 对应 images/icons/<icon>.svg；color 主色、tint 浅底色
   modules: [
-    { key: 'apps', name: '应用库', sub: '按行业查找应用方案', icon: 'apps', color: '#8A1538', tint: '#f8e6ec', access: 'registered', visible: true, link: { type: 'tab', url: '/pages/apps/apps' } },
+    { key: 'apps', name: '应用库', sub: '按行业查找应用方案', icon: 'apps', color: '#8A1538', tint: '#f8e6ec', access: 'public', visible: true, link: { type: 'tab', url: '/pages/apps/apps' } },
     { key: 'products', name: '产品库', sub: '品牌 · 系列 · 规格', icon: 'products', color: '#a8325e', tint: '#f9e9ef', access: 'registered', visible: true, link: { type: 'tab', url: '/pages/products/products' } },
     { key: 'kb', name: '专属知识库', sub: '公司介绍 · 产品培训', icon: 'kb', color: '#5b1830', tint: '#f2e6ea', access: 'registered', visible: true, link: { type: 'page', url: '/pages/kb/kb' } },
     { key: 'inquiry', name: '需求咨询', sub: '样品 · 上门 · 问询', icon: 'inquiry', color: '#c2185b', tint: '#fbe7ef', access: 'registered', visible: true, link: { type: 'page', url: '/pages/inquiry/inquiry' } },
@@ -590,11 +592,26 @@ module.exports = { HOME, PAGES, LINKS, ABOUT }
 function homeModules() { return HOME.modules.map((m,i)=>({...m,sort:m.sort == null ? i : Number(m.sort)})).filter(m=>m.visible!==false).sort((a,b)=>a.sort-b.sort) }
 module.exports.homeModules = homeModules
 
-window.ITW_FRONTEND.cms = module.exports; }
+window.ITW_FRONTEND["cms"] = module.exports; }
+{ const module = {exports:{}};
+// 公开摘要单独配置，不截取受限正文作为游客预览。
+function summary(app, context='') {
+ const plain=String(app.publicSummary||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim()
+ return plain ? plain.slice(0,120)+(plain.length>120?'…':'') : (context ? context+'相关应用。' : '')+'浏览应用概览，认证后查看完整方案和相关资料。'
+}
+function gate(user,access='certified') {
+ if(user.role==='guest')return {title:'想了解这个应用的解决方案？',text:'注册会员，继续探索应用库。完整方案、视频和文档需完成身份认证后查看。',button:'注册会员',role:'member'}
+ if(access==='staff')return {title:'此资料仅供 ITW PPF 员工查看',text:'请使用员工身份完成验证。',button:'员工身份验证',role:'staff'}
+ if(user.certStatus==='pending')return {title:'认证申请审核中',text:'审核期间可继续浏览公开概览，通过后即可查看完整方案和资料。',button:'查看认证状态',page:'member'}
+ return {title:'认证后查看完整应用方案',text:'你已注册会员。完成身份认证后，可查看此应用的详细方案、视频和文档。',button:'申请身份认证',role:'certified'}
+}
+module.exports={summary,gate}
+
+window.ITW_FRONTEND["app-preview"] = module.exports; }
 </script>
 <script>
 (function () {
-  const {markets:marketRules,resources:media,search:searchEngine,cms:homeConfig}=window.ITW_FRONTEND;
+  const {markets:marketRules,resources:media,search:searchEngine,cms:homeConfig,'app-preview':appPreview}=window.ITW_FRONTEND;
   // ---------------- 测试数据（与小程序 utils/mock.js 一致） ----------------
   const INDUSTRIES = [
     ['traffic', '交通', ['乘用车', '新能源动力电池', '汽车电子', '商用车', '轨道交通']],
@@ -724,6 +741,7 @@ const mediaFileIds = [
     applicationRecords
       .flatMap(item => [
         mediaFileId(item.mainImage),
+        mediaFileId(item.publicCover),
         mediaFileIdsOf(item.videoFile),
         mediaFileId(item.videoCover)
       ])
@@ -886,6 +904,8 @@ const mediaFileIds = [
               ind: industry,
               sub: sub,
               name: item.name || '未命名应用',
+              publicSummary:item.publicSummary||'',
+              publicCoverUrl:mediaUrl(item.publicCover),
               desc: item.description || '',
               mainImage: mediaFileId(item.mainImage),
               mainImageUrl: mediaUrl(item.mainImage),
@@ -1076,26 +1096,33 @@ const mediaFileIds = [
         // [key, 名称, 说明, 主色, 浅底]；模块顺序和内容来自后台配置
         const MODS = homeConfig.homeModules();
         const guest = S.user.role === 'guest';
-        const badge = k => k === 'mall' ? '<span class="mbadge ext">外部商城</span>' : (k === 'event' || (k === 'faq' && !guest)) ? '<span class="mbadge new">新增示例</span>' : guest ? `<span class="mbadge">${svg('lock')}注册</span>` : '';
+        const badge = k => k === 'apps' ? '<span class="mbadge">可预览</span>' : k === 'mall' ? '<span class="mbadge ext">外部商城</span>' : (k === 'event' || (k === 'faq' && !guest)) ? '<span class="mbadge new">新增示例</span>' : guest ? `<span class="mbadge">${svg('lock')}注册</span>` : '';
         return `<div class="banner"><div class="slides" style="transform:translateX(-${S.banner * 100}%)">${BANNERS.map(b => `<div class="slide" style="background:${b.bg}" ${b.custom ? `data-go="custom" data-q='{"id":"${b.custom}"}'` : `data-act="article" data-t="${esc(b.title)}"`}><small>${b.custom ? '活动专题' : '公众号推文'}</small><b>${esc(b.title)}</b><em>${esc(b.sub)} ›</em></div>`).join('')}</div><div class="dots">${BANNERS.map((_, i) => `<i class="${i === S.banner ? 'on' : ''}"></i>`).join('')}</div></div>
           ${guest ? `<div class="notice" data-go="register" data-q='{"role":"member"}'><span>注册会员，解锁全部专属服务</span><b>去注册</b></div>` : ''}
           <div class="mods">${MODS.map(m => `<div class="mod" style="--c:${esc(m.color)};--tint:${esc(m.tint)};background:${esc(m.background || '#fff')}" data-act="module" data-k="${esc(m.key)}">${m.backgroundImage ? `<img class="module-bg" src="${esc(m.backgroundImage)}" alt="">` : ''}<div class="mi">${svg(m.icon) || ''}</div><div class="mn">${esc(m.name)}</div><div class="ms">${esc(m.sub)}</div>${badge(m.key)}</div>`).join('')}</div>`;
       } },
 
-    apps: { title: '应用库', ppt: '5', access: 'registered', tab: true, vis: () => can('registered') ? ['all', '所有用户可见'] : ['no', '无权限用户的进入界面'],
+    apps: { title: '应用库', ppt: '5', access: 'public', tab: true, vis: () => ['all', '游客可浏览应用概览'],
       init: q => q.ind != null ? { ind: +q.ind, sub: 0 } : { ind: 1, sub: 2 },
       render(st) {
         const sub = INDUSTRIES[st.ind].subs[st.sub];
         const apps = APPS.filter(a => a.sub === sub);
         return industryNav(st, `<div class="card cp"><div style="font-weight:600;margin-bottom:6px">${INDUSTRIES[st.ind].name} · ${esc(sub.name)}</div><div class="mut" style="line-height:1.7">${esc(sub.desc)}</div></div>
-          <div class="g2">${apps.map(a => `<div class="tile" data-go="app-detail" data-q='{"id":"${a.id}"}'><div class="ph">${a.mainImageUrl ? `<img class="media-img" src="${esc(a.mainImageUrl)}" alt="${esc(a.name)}" loading="lazy">` : '应用图示'}</div><div class="tt">${esc(a.name)}</div><div class="ts">${can('certified') ? '查看详情' : '🔒 认证可见详情'}</div></div>`).join('')}</div>`);
+          <div class="g2">${apps.map(a => `<div class="tile" data-go="app-detail" data-q='{"id":"${a.id}"}'><div class="ph">${a.mainImageUrl ? `<img class="media-img" src="${esc(a.mainImageUrl)}" alt="${esc(a.name)}" loading="lazy">` : '应用图示'}</div><div class="tt">${esc(a.name)}</div><div class="ts">${esc(appPreview.summary(a,a.sub.name))}</div><div class="ts">${can(a.access) ? '查看详情' : '查看概览 · 完整方案需认证'}</div></div>`).join('')}</div>`);
       } },
 
-    'app-detail': { title: '应用库', ppt: '5–6', vis: () => can('certified') ? ['ok', '有权限用户的进入界面'] : ['no', '无权限用户的进入界面'],
+    'app-detail': { title: '应用库', ppt: '5–6', vis: () => can('certified') ? ['ok', '完整应用详情'] : ['all', '公开摘要预览'],
+      previewGate:true,
       access: q => (byId(APPS, q.id) || APPS[0]).access,
       render(st, q) {
         const a = byId(APPS, q.id) || APPS[0];
         const crumb = [a.ind.name, a.sub.name, a.name].join(' > ');
+        if(!can(a.access)){
+          const gate=appPreview.gate(S.user,a.access);
+          const cover=a.publicCoverUrl||a.mainImageUrl||'';
+          return `<div class="crumb">${esc(crumb)}</div><div class="pad"><div class="card cp"><div class="preview-title">${esc(a.name)}</div><div class="preview-summary">${esc(appPreview.summary(a,a.sub.name))}</div></div><div class="card ph app-main-media">${cover?`<img class="media-img" src="${esc(cover)}" alt="${esc(a.name)}">`:'应用图示'}</div><div class="preview-gate"><div class="preview-fade" aria-hidden="true"><i></i><i></i><i></i></div><div class="gate-content"><div class="preview-title">${esc(gate.title)}</div><p class="preview-summary">${esc(gate.text)}</p><button class="btnp" data-go="${gate.page||'register'}" ${gate.role?`data-q='{"role":"${gate.role}"}'`:''}>${esc(gate.button)}</button><button class="gate-back" data-go="apps">继续浏览应用</button></div></div></div>`;
+        }
+
         const resources = (a.resources || []).filter(
           resource =>
             !resource.access ||
@@ -1509,7 +1536,7 @@ const mediaFileIds = [
     const f = cur(), P = PAGES[f.page];
     const access = typeof P.access === 'function' ? P.access(f.q) : P.access;
     const pageLock = access ? lockFor(access) : null;
-    const lock = S.lock || pageLock;
+    const lock = S.lock || (P.previewGate ? null : pageLock);
     $('nav').classList.toggle('dark', !!P.dark); document.querySelector('.status').classList.toggle('dark', !!P.dark);
     $('nav').innerHTML = `${S.stack.length > 1 ? '<button class="back" data-act="back" aria-label="返回">‹</button>' : ''}<span>${esc(cur().q.nav || P.title)}</span><button class="sync" data-act="sync" aria-label="刷新后台数据">↻</button><span class="capsule">••• | ◎</span>`;
     const html = P.render.call(P, f.ps, f.q);
@@ -1611,7 +1638,7 @@ const mediaFileIds = [
       case 'regrole': saveDraft(f); f.ps.role = d.r; render(); restoreDraft(f); return;
       case 'hot': f.ps.kw = d.k; f.ps.limit=20; return render();
       case 'more-search': f.ps.limit=(f.ps.limit||20)+20; $('sresult').innerHTML=PAGES.search.results(f.ps);return;
-      case 'search-result': if(!can(d.access)){S.lock=lockFor(d.access);S.lockClosable=true;return render();}return go(d.page,{id:d.id});
+      case 'search-result': if(d.page!=='app-detail'&&!can(d.access)){S.lock=lockFor(d.access);S.lockClosable=true;return render();}return go(d.page,{id:d.id});
       case 'qcat': f.ps.cat = d.c; return render();
       case 'qtoggle': f.ps.open[d.id] = !f.ps.open[d.id]; return render();
       case 'ask': f.ps.asking = true; S.overlay = `<div class="mask" style="z-index:25;align-items:flex-end;padding:0" data-act="askclose"><div class="sheet"><div class="modal-t" style="text-align:center;margin-bottom:12px">我要提问</div><form id="askform" novalidate><div class="form">${row('问题分类', true, `<select id="q-cat" name="cat"><option value="">-请选择-</option>${FAQ_CATS.map(c => `<option>${c}</option>`).join('')}</select>`)}${row('问题描述', true, `<textarea id="q-text" name="text" placeholder="请描述您的问题"></textarea>`)}${row('图片', false, `<input type="file" id="q-img" name="img" accept="image/*" style="flex:1;min-width:0;font-size:12px">`)}</div><button class="btnp" type="submit">提交</button></form></div></div>`; return render();

@@ -57,3 +57,17 @@ test('supplementary product videos support multiple items, permissions and cross
  const sections=media.productVideos(p,a=>a!=='staff')
  assert.equal(sections.primary.length,1);assert.deepEqual(sections.additional.map(v=>v.title),['施工演示','维护'])
 })
+test('application public summary never falls back to protected body',()=>{
+ const preview=require('../utils/app-preview')
+ assert(!preview.summary({desc:'保密正文'},'风能').includes('保密正文'))
+ assert.equal(preview.summary({publicSummary:'公开简介',desc:'保密正文'}),'公开简介')
+ assert.equal(preview.gate({role:'guest'}).role,'member')
+ assert.equal(preview.gate({role:'member',certStatus:'pending'}).page,'member')
+})
+test('native application preview strips restricted content and refreshes after authentication',()=>{
+ const user={role:'guest'};const p=page('app-detail',user);p.onLoad({id:data.APPS[0].id})
+ assert.equal(p.data.restricted,true);assert.equal(p.data.app.desc,undefined);assert.deepEqual(p.data.videos,[]);assert.equal(p.data.gate.role,'member')
+ user.role='member';p.onShow();assert.equal(p.data.gate.role,'certified')
+ user.certStatus='pending';p.onShow();assert.equal(p.data.gate.page,'member')
+ user.role='certified';user.certStatus='';p.onShow();assert.equal(p.data.restricted,false);assert.equal(p.data.app.desc,data.APPS[0].desc)
+})

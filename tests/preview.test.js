@@ -56,3 +56,16 @@ test('old inline consultation position now renders additional video area includi
  p.additionalVideos=[{title:'施工演示',src:'https://test/a.mp4'},{title:'维护说明',src:'https://test/b.mp4'}]
  const html=api.PAGES['product-detail'].render({},{id:p.id});assert.equal((html.match(/<video /g)||[]).length,2);assert.match(html,/施工演示/);assert(!html.includes('暂无更多视频资料'))
 })
+test('guest application list and detail use inline teaser without full-screen mask or restricted data',()=>{
+ const {api,elements}=loadPreview();api.S.user={role:'guest'};const a=api.APPS[0]
+ a.publicSummary='公开预览摘要';a.desc='受限完整正文';a.resources=[{kind:'video',resourceFileUrl:'https://test/private.mp4'},{kind:'article',title:'内部推文',externalUrl:'https://test/private-article'}]
+ api.go('apps');assert(!elements.get('overlay').innerHTML.includes('class="mask"'));assert.match(elements.get('body').innerHTML,/查看概览/)
+ api.go('app-detail',{id:a.id});const html=elements.get('body').innerHTML
+ assert.match(html,/公开预览摘要/);assert.match(html,/注册会员/);assert(!html.includes('受限完整正文'));assert(!html.includes('https://test/private'));assert(!elements.get('overlay').innerHTML.includes('class="mask"'));assert(!elements.get('overlay').innerHTML.includes('class="abar"'))
+})
+test('member teaser distinguishes certification and pending status; certified role still gets full detail',()=>{
+ const {api}=loadPreview();const a=api.APPS[0];a.desc='完整方案正文'
+ api.S.user={role:'member'};assert.match(api.PAGES['app-detail'].render({},{id:a.id}),/申请身份认证/)
+ api.S.user.certStatus='pending';assert.match(api.PAGES['app-detail'].render({},{id:a.id}),/查看认证状态/)
+ api.S.user={role:'certified'};const full=api.PAGES['app-detail'].render({},{id:a.id});assert.match(full,/完整方案正文/);assert(!full.includes('class="preview-gate"'))
+})

@@ -1,6 +1,7 @@
 const auth = require('../../utils/auth')
 const mock = require('../../utils/mock')
 const media = require('../../utils/resources')
+const preview = require('../../utils/app-preview')
 
 Page({
   data: { app: null, crumb: '', lock: null, favItem: null, consultUrl: '' },
@@ -8,18 +9,30 @@ Page({
   onLoad(q) {
     const app = mock.findApp(q.id) || mock.APPS[0]
     const crumb = [mock.industryOf(app.industryId).name, mock.subOf(app.subId).name, app.name].join(' > ')
-    this.setData({
-      videos: media.videos(app, auth.can),
-      app, crumb, articles:media.articles(app,auth.can), documents:media.documents(app,auth.can),
-      favItem: { type: 'app', id: app.id, title: app.name, sub: crumb, url: '/pages/app-detail/app-detail?id=' + app.id },
-      consultUrl: '/pages/inquiry/inquiry?tab=0&app=' + app.id
-    })
+    this.fullApp = app
+    this.setData({crumb, favItem:{type:'app',id:app.id,title:app.name,sub:crumb,url:'/pages/app-detail/app-detail?id='+app.id},consultUrl:'/pages/inquiry/inquiry?tab=0&app='+app.id})
+    this.refreshAccess()
   },
 
-  onShow() {
-    // 应用详情：认证会员及以上可见；普通会员看到模糊遮罩
-    this.setData({ lock: auth.lockFor(this.data.app.access),videos:media.videos(this.data.app,auth.can),articles:media.articles(this.data.app,auth.can),documents:media.documents(this.data.app,auth.can) })
+  onShow() { this.refreshAccess() },
+  refreshAccess() {
+    if(!this.fullApp)return
+    const app=this.fullApp
+    const allowed=auth.can(app.access)
+    const sub=mock.subOf(app.subId)
+    this.setData({
+      lock:null, restricted:!allowed, gate:preview.gate(auth.getUser(),app.access),
+      app:allowed?app:{id:app.id,name:app.name,access:app.access},
+      publicSummary:preview.summary(app,sub&&sub.name),cover:app.publicCoverUrl||app.mainImageUrl||'',
+      videos:allowed?media.videos(app,auth.can):[],articles:allowed?media.articles(app,auth.can):[],documents:allowed?media.documents(app,auth.can):[]
+    })
   },
+  unlock() {
+    const gate=this.data.gate
+    if(gate.page==='member')return wx.switchTab({url:'/pages/member/member'})
+    wx.navigateTo({url:'/pages/register/register?role='+gate.role})
+  },
+  backToApps() { wx.switchTab({url:'/pages/apps/apps'}) },
 
   openArticle(e) {
     if (!auth.can(this.data.app.access)) return
@@ -32,8 +45,9 @@ Page({
     if (!url) return wx.showToast({title:'文件暂未提供',icon:'none'})
     wx.downloadFile({url,success:r=>{if(r.statusCode!==200)return wx.showToast({title:'文件下载失败',icon:'none'});wx.openDocument({filePath:r.tempFilePath,showMenu:true,fail:()=>wx.showToast({title:'文件无法打开',icon:'none'})})},fail:()=>wx.showToast({title:'文件下载失败',icon:'none'})})
   },
-  openSinglePage() { wx.navigateTo({ url: '/pages/kb-doc/kb-doc?id=' + this.data.app.singlePageDocId }) },
+  openSinglePage() { if(!auth.can(this.fullApp.access))return;wx.navigateTo({ url: '/pages/kb-doc/kb-doc?id=' + this.data.app.singlePageDocId }) },
   openAch() {
+    if(!auth.can(this.fullApp.access))return
     wx.navigateTo({ url: '/pages/kb-doc/kb-doc?sales=1&id=' + this.data.app.achDocId })
   },
 
