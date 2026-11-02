@@ -1,5 +1,5 @@
 const auth = require('../../utils/auth')
-const mock = require('../../utils/mock')
+const { selection } = require('../../utils/markets')
 
 // 注册字段按 PPT 第15页原型图（ITW 反馈：先按现有 UI 开发，测试后再定稿）
 // 测试阶段所有字段都可以留空直接提交；上线前改为 false 恢复必填校验
@@ -38,8 +38,8 @@ const FORMS = {
 
 Page({
   data: {
-    role: 'member', fields: FORMS.member, allowEmpty: ALLOW_EMPTY, form: { industries: {} }, countdown: 0,
-    industries: mock.INDUSTRIES,
+    role: 'member', fields: FORMS.member, allowEmpty: ALLOW_EMPTY, form: { industries: {}, industrySelections: [] }, countdown: 0,
+
     roles: [{ key: 'member', name: '普通会员' }, { key: 'certified', name: '认证会员' }, { key: 'staff', name: 'ITW PPF员工' }],
     tips: {
       certified: '认证会员适用于经销商及客户。选择“认证会员”注册，需提交资质接受审核，由销售在 CRM 中人工确认。',
@@ -50,21 +50,20 @@ Page({
   onLoad(q) {
     const user = auth.getUser()
     const form = Object.assign({ industries: {} }, user.role === 'guest' ? {} : user)
+    form.industrySelections = selection((form.industrySelections || []).map(s => s.segmentId)).map(s => s.segmentId)
     this.setData({ form })
     this.pickRole({ currentTarget: { dataset: { role: q.role || 'member' } } })
   },
 
   pickRole(e) {
-    const role = e.currentTarget.dataset.role
+    const requested = e.currentTarget.dataset.role
+    const role = FORMS[requested] ? requested : 'member'
     this.setData({ role, fields: FORMS[role] })
   },
 
   onInput(e) { this.setData({ ['form.' + e.currentTarget.dataset.key]: e.detail.value.trim() }) },
   onRadio(e) { this.setData({ ['form.' + e.currentTarget.dataset.key]: e.detail.value }) },
-  toggleIndustry(e) {
-    const name = e.currentTarget.dataset.name
-    this.setData({ ['form.industries.' + name]: !this.data.form.industries[name] })
-  },
+  onIndustries(e) { this.setData({ 'form.industrySelections': e.detail.value }) },
 
   sendCode(e) {
     if (this.data.countdown) return
@@ -84,7 +83,7 @@ Page({
     const f = this.data.form
     for (const field of this.data.fields) {
       const v = f[field.key]
-      const empty = field.type === 'industries' ? !Object.values(f.industries || {}).some(Boolean) : !v
+      const empty = field.type === 'industries' ? !selection(f.industrySelections).length : !v
       if (field.required && empty && !ALLOW_EMPTY) return '请填写' + field.label
       if (v && field.type === 'phone' && !/^1\d{10}$/.test(v)) return '手机号格式不正确'
       if (v && field.type === 'email' && !/^\S+@\S+\.\S+$/.test(v)) return '邮箱格式不正确'
@@ -97,6 +96,8 @@ Page({
     const err = this.validate()
     if (err) return wx.showToast({ title: err, icon: 'none' })
     const { smsCode, emailCode, ...profile } = this.data.form
+    profile.industrySelections = selection(profile.industrySelections)
+    profile.industries = Object.fromEntries(profile.industrySelections.map(s => [s.marketName, true]))
     const role = this.data.role
     // 正式版：调用云函数保存资料、校验验证码，并同步到 CRM（PPT第19页）
     if (role === 'certified' && AUTO_CERTIFY) {
@@ -124,3 +125,4 @@ Page({
     setTimeout(() => wx.switchTab({ url: '/pages/member/member' }), 800)
   }
 })
+

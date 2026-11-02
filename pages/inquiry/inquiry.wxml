@@ -7,7 +7,9 @@
     <view class="form-row" wx:for="{{fields}}" wx:key="key">
       <view class="form-label">{{item.label}}<text wx:if="{{item.required}}" class="req">*</text></view>
 
-      <picker wx:if="{{item.type === 'product'}}" range="{{productNames}}" bindchange="onPick" data-key="product">
+      <picker wx:if="{{item.type === 'market'}}" range="{{markets}}" range-key="name" value="{{marketIndex < 0 ? 0 : marketIndex}}" bindchange="onMarket"><view class="picker-val">{{marketIndex < 0 ? '-请选择-' : markets[marketIndex].name}}</view></picker>
+      <picker wx:elif="{{item.type === 'segment'}}" range="{{segments}}" range-key="name" disabled="{{marketIndex < 0}}" value="{{segmentIndex < 0 ? 0 : segmentIndex}}" bindchange="onSegment"><view class="picker-val">{{marketIndex < 0 ? '请先选择市场' : segmentIndex < 0 ? '-请选择-' : segments[segmentIndex].name}}</view></picker>
+      <picker wx:elif="{{item.type === 'product'}}" range="{{productNames}}" bindchange="onPick" data-key="product">
         <view class="{{form.product > -1 ? 'picker-val' : 'picker-ph'}}">{{form.product > -1 ? productNames[form.product] : '-请选择-'}}</view>
       </picker>
       <picker wx:elif="{{item.type === 'app'}}" range="{{appNames}}" bindchange="onPick" data-key="app">
@@ -34,3 +36,4 @@
 </view>
 <lock-mask lock="{{lock}}" />
 <float-bar />
+

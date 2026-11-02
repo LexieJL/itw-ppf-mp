@@ -1,4 +1,4 @@
-// 运营后台（CMS）配置：首页 Banner、首页模块、自定义页面都是数据，改这里不用改页面代码、不用重新提审。
+// 本地前端配置。修改后需重新构建/发布；后台配置接口留待后续接入。
 // 正式版这些数据存在 CloudBase，由运营在后台用预制控件新增、排序、隐藏、设置跳转和权限。
 // access：public 所有人 / registered 已注册 / certified 认证会员和员工
 const ARTICLE_URL = 'https://mp.weixin.qq.com/'
@@ -17,7 +17,7 @@ const HOME = {
     { key: 'inquiry', name: '需求咨询', sub: '样品 · 上门 · 问询', icon: 'inquiry', color: '#c2185b', tint: '#fbe7ef', access: 'registered', visible: true, link: { type: 'page', url: '/pages/inquiry/inquiry' } },
     { key: 'dealer', name: '成为经销商', sub: '提交代理申请', icon: 'dealer', color: '#7b3f55', tint: '#f3e9ed', access: 'registered', visible: true, link: { type: 'page', url: '/pages/dealer/dealer' } },
     // 工业电商：ITW 提供的京东、天猫店铺链接（ITW外部链接.docx），汇总在通用页 mall
-    { key: 'mall', name: '工业电商', sub: '在线选购', icon: 'mall', color: '#2e7d32', tint: '#e7f3e8', access: 'public', visible: true, badge: '外部商城', badgeType: 'ext', link: { type: 'custom', id: 'mall' } },
+    { key: 'mall', name: '工业电商', sub: '在线选购', icon: 'mall', color: '#2e7d32', tint: '#e7f3e8', access: 'public', visible: true, badge: '乐语小程序', badgeType: 'ext', link: { type: 'miniprogram', name: '乐语小程序', appId: '', path: '' } },
     // 以下两个是 PPT 首页第二屏“未来可以增加更多模块”的示例
     { key: 'faq', name: '常见问题库', sub: '检索 · 分类 · 提问', icon: 'faq', color: '#6d4c41', tint: '#f1ebe8', access: 'registered', visible: true, badge: '新增示例', badgeType: 'new', link: { type: 'page', url: '/pages/faq/faq' } },
     { key: 'event', name: '活动专题', sub: '后台用控件搭建的页面', icon: 'event', color: '#455a64', tint: '#e9eef0', access: 'public', visible: true, badge: '新增示例', badgeType: 'new', link: { type: 'custom', id: 'event2026' } }
@@ -76,3 +76,8 @@ const PAGES = {
 }
 
 module.exports = { HOME, PAGES, LINKS, ABOUT }
+
+
+// 可在每个模块中设置 sort、background（颜色/渐变）、backgroundImage（图片地址）。
+function homeModules() { return HOME.modules.map((m,i)=>({...m,sort:m.sort == null ? i : Number(m.sort)})).filter(m=>m.visible!==false).sort((a,b)=>a.sort-b.sort) }
+module.exports.homeModules = homeModules

@@ -20,3 +20,7 @@
 .m-badge image { width: 20rpx; height: 20rpx; margin-right: 6rpx; }
 .m-badge.ext { background: #e8f5e9; color: #2e7d32; }
 .m-badge.new { background: #f6e8ed; color: #8A1538; }
+
+
+.module-bg { position:absolute; width:100%; height:100%; left:0; top:0; }
+.m-icon { position:relative; }

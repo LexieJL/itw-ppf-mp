@@ -30,16 +30,12 @@
       <text class="tag" wx:for="{{p.fields}}" wx:key="*this">{{item}}</text>
     </view>
   </view>
-  <view class="section-title">产品视频</view>
-  <view class="card ph video"><view class="ph-play">▶</view>产品视频</view>
-  <view class="card consult" bindtap="toConsult">
-    <view>
-      <view class="consult-t">需求咨询</view>
-      <view class="muted">申请样品资料、预约上门或一般问询</view>
-    </view>
-    <text class="consult-go">›</text>
-  </view>
+  <block wx:if="{{videos.length && !lock}}">
+    <view class="section-title">产品视频</view>
+    <view class="card" wx:for="{{videos}}" wx:key="id"><video class="media-video" src="{{item.src}}" poster="{{item.poster}}" controls binderror="onVideoError" /><view class="card-pad">{{item.title}}</view></view>
+  </block>
 </view>
 <action-bar wx:if="{{!lock}}" item="{{favItem}}" consult="{{consultUrl}}" />
 <lock-mask lock="{{lock}}" />
 <float-bar bottom="{{160}}" />
+

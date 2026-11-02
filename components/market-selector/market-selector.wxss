@@ -1,0 +1,2 @@
+:host { display:block; width:100%; min-width:0; }
+.selector{padding:16rpx 0}.label{font-size:24rpx;color:#666;margin:12rpx 0}.market{padding:16rpx;background:#f7f7f8;border-radius:12rpx;color:#8a1538}.options{display:flex;flex-wrap:wrap;gap:12rpx}.option,.selected{font-size:24rpx;padding:12rpx 16rpx;border:1rpx solid #ddd;border-radius:12rpx;line-height:1.5;word-break:break-all}.on,.selected{background:#f8e8ee;border-color:#8a1538;color:#8a1538}

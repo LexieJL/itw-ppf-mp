@@ -56,7 +56,8 @@
     "float-bar": "/components/float-bar/float-bar",
     "lock-mask": "/components/lock-mask/lock-mask",
     "industry-nav": "/components/industry-nav/industry-nav",
-    "action-bar": "/components/action-bar/action-bar"
+    "action-bar": "/components/action-bar/action-bar",
+    "market-selector": "/components/market-selector/market-selector"
   },
   "sitemapLocation": "sitemap.json",
   "style": "v2",

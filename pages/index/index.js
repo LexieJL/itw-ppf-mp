@@ -10,7 +10,7 @@ Page({
     this.setData({
       role: auth.getUser().role,
       banners: cms.HOME.banners,
-      modules: cms.HOME.modules.filter(m => m.visible).map(m => Object.assign({}, m, { locked: !auth.can(m.access) }))
+      modules: cms.homeModules().map(m => Object.assign({}, m, { locked: !auth.can(m.access) }))
     })
   },
 
@@ -27,3 +27,4 @@ Page({
   closeLock() { this.setData({ lock: null }) },
   onShareAppMessage() { return { title: 'ITW PPF', path: '/pages/index/index' } }
 })
+

@@ -1,6 +1,6 @@
 <view class="search-box">
   <text>⌕</text>
-  <input focus placeholder="搜索应用、产品、视频、文档" value="{{keyword}}" bindinput="onInput" confirm-type="search" />
+  <input focus placeholder="搜索产品、应用、推文、视频、文档、知识库" value="{{keyword}}" bindinput="onInput" confirm-type="search" />
 </view>
 <view class="container">
   <block wx:if="{{!keyword}}">
@@ -10,13 +10,17 @@
     </view>
   </block>
   <block wx:else>
-    <view wx:for="{{groups}}" wx:key="name" wx:if="{{item.list.length}}">
+    <view wx:for="{{groups}}" wx:for-index="groupIndex" wx:key="name" wx:if="{{item.list.length}}">
       <view class="section-title">{{item.name}} <text class="muted">{{item.count}}</text></view>
-      <view wx:for="{{item.list}}" wx:for-item="r" wx:key="url" class="card row" bindtap="open" data-url="{{r.url}}">
+      <view wx:for="{{item.list}}" wx:for-item="r" wx:key="key" class="card row" bindtap="open" data-i="{{groupIndex}}" data-j="{{index}}">
         <view class="t">{{r.title}}</view>
         <view class="muted">{{r.sub}}<text wx:if="{{r.locked}}"> · 🔒</text></view>
       </view>
+      <view wx:if="{{item.more}}" class="hot" bindtap="more" data-i="{{groupIndex}}">加载更多</view>
     </view>
     <view wx:if="{{total === 0}}" class="empty">没有找到“{{keyword}}”相关内容</view>
   </block>
 </view>
+
+
+<lock-mask lock="{{lock}}" closable bind:close="closeLock" />

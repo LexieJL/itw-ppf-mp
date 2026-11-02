@@ -6,14 +6,11 @@
   <view class="tip" wx:if="{{tips[role]}}">{{tips[role]}}</view>
 
   <view class="form">
-    <view class="form-row" wx:for="{{fields}}" wx:key="key">
+    <view class="form-row {{item.type === 'industries' ? 'market-row' : ''}}" wx:for="{{fields}}" wx:key="key">
       <view class="form-label">{{item.label}}<text wx:if="{{item.required && !allowEmpty}}" class="req">*</text></view>
 
       <block wx:if="{{item.type === 'industries'}}">
-        <view class="chips">
-          <view wx:for="{{industries}}" wx:for-item="ind" wx:key="id" class="chip {{form.industries[ind.name] ? 'on' : ''}}"
-            bindtap="toggleIndustry" data-name="{{ind.name}}">{{ind.name}}</view>
-        </view>
+        <market-selector value="{{form.industrySelections}}" bind:change="onIndustries" />
       </block>
       <block wx:elif="{{item.type === 'radio'}}">
         <radio-group class="radios" bindchange="onRadio" data-key="{{item.key}}">
@@ -32,3 +29,4 @@
   <view class="btn-primary" bindtap="submit">完成注册</view>
   <view class="muted foot">测试阶段所有字段都可以留空直接提交</view>
 </view>
+

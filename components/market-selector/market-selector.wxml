@@ -1,0 +1,8 @@
+<view class="selector">
+ <view class="label">选择市场</view>
+ <picker range="{{markets}}" range-key="name" value="{{active}}" bindchange="onMarket"><view class="market">{{markets[active].name}} ▾</view></picker>
+ <view class="label">选择细分行业（可跨市场多选）</view>
+ <view class="options"><view wx:for="{{options}}" wx:key="id" class="option {{item.checked ? 'on' : ''}}" bindtap="toggle" data-id="{{item.id}}">{{item.checked ? '✓ ' : ''}}{{item.name}}</view></view>
+ <view wx:if="{{selected.length}}" class="label">已选 {{selected.length}} 项（点击移除）</view>
+ <view class="options"><view wx:for="{{selected}}" wx:key="segmentId" class="selected" bindtap="toggle" data-id="{{item.segmentId}}">{{item.marketName}}／{{item.segmentName}} ×</view></view>
+</view>

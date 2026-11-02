@@ -20,3 +20,7 @@
 .tag { font-size: 22rpx; padding: 6rpx 18rpx; border-radius: 999rpx; background: #f3f3f4; color: #555; margin: 0 12rpx 12rpx 0; }
 .tag.mk { background: #f8e8ee; color: #8A1538; }
 .tag.new { background: #8A1538; color: #fff; margin: 0 0 0 12rpx; }
+
+
+.media-video { display:block;width:100%;height:380rpx; }
+.container { padding-bottom:200rpx; }

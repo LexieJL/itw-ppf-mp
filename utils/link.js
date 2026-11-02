@@ -8,8 +8,8 @@ function open(link) {
     case 'custom': return wx.navigateTo({ url: '/pages/custom/custom?id=' + link.id })
     case 'article': return wx.navigateTo({ url: '/pages/webview/webview?url=' + encodeURIComponent(link.url) })
     case 'miniprogram':
-      if (!link.appId) return wx.showToast({ title: '将跳转' + (link.name || '外部小程序') + '（待配置）', icon: 'none' })
-      return wx.navigateToMiniProgram({ appId: link.appId, path: link.path || '' })
+      if (!link.appId) return wx.showToast({ title: (link.name || '外部小程序') + '暂未开放', icon: 'none' })
+      return wx.navigateToMiniProgram({ appId: link.appId, path: link.path || '', fail: () => wx.showToast({title:'暂时无法打开，请稍后重试',icon:'none'}) })
     // 外部网站：小程序只能打开已配置业务域名的网页，其余复制链接让用户到浏览器打开
     case 'web':
       if (link.webview) return wx.navigateTo({ url: '/pages/webview/webview?url=' + encodeURIComponent(link.url) })
@@ -21,3 +21,4 @@ function open(link) {
 }
 
 module.exports = { open }
+

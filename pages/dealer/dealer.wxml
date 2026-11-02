@@ -9,9 +9,10 @@
   </view>
   <view class="section-title">成为经销商申请</view>
   <view class="form">
-    <view class="form-row" wx:for="{{fields}}" wx:key="key">
+    <view class="form-row {{item.type === 'markets' ? 'market-row' : ''}}" wx:for="{{fields}}" wx:key="key">
       <view class="form-label">{{item.label}}<text wx:if="{{item.required}}" class="req">*</text></view>
-      <textarea wx:if="{{item.multiline}}" auto-height placeholder="{{item.placeholder}}" value="{{form[item.key]}}" bindinput="onInput" data-key="{{item.key}}" />
+      <market-selector wx:if="{{item.type === 'markets'}}" value="{{form.industrySelections}}" bind:change="onIndustries" />
+      <textarea wx:elif="{{item.multiline}}" auto-height placeholder="{{item.placeholder}}" value="{{form[item.key]}}" bindinput="onInput" data-key="{{item.key}}" />
       <input wx:else placeholder="{{item.placeholder}}" value="{{form[item.key]}}" bindinput="onInput" data-key="{{item.key}}" />
     </view>
   </view>
@@ -20,3 +21,4 @@
 </view>
 <lock-mask lock="{{lock}}" />
 <float-bar />
+

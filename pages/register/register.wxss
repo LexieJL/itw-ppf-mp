@@ -12,3 +12,6 @@
 .foot { text-align: center; margin-top: 24rpx; }
 
 .brand-logo { display: block; width: 200rpx; height: 70rpx; margin: 24rpx auto 32rpx; }
+
+
+.market-row { display:block; padding-bottom:16rpx; }

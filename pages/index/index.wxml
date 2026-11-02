@@ -16,7 +16,8 @@
   </view>
 
   <view class="modules">
-    <view class="module" wx:for="{{modules}}" wx:key="key" bindtap="onModule" data-i="{{index}}">
+    <view style="background: {{item.background || '#fff'}}" class="module" wx:for="{{modules}}" wx:key="key" bindtap="onModule" data-i="{{index}}">
+      <image wx:if="{{item.backgroundImage}}" class="module-bg" src="{{item.backgroundImage}}" mode="aspectFill" />
       <view class="m-deco" style="background: {{item.tint}}"></view>
       <view class="m-icon" style="background: {{item.tint}}"><image src="/images/icons/{{item.icon}}.svg" /></view>
       <view class="m-name">{{item.name}}</view>
@@ -28,3 +29,4 @@
 </view>
 <lock-mask lock="{{lock}}" closable bind:close="closeLock" />
 <float-bar />
+
