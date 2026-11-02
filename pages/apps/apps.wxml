@@ -1,4 +1,4 @@
-<view>
+<view class="{{lock ? 'library-peek' : ''}}">
   <industry-nav industries="{{industries}}" indIndex="{{indIndex}}" subIndex="{{subIndex}}" bind:change="onNav">
     <view class="card card-pad">
       <view class="desc-title">{{industries[indIndex].name}} · {{sub.name}}</view>
@@ -15,5 +15,6 @@
   </industry-nav>
 </view>
 
+<lock-mask lock="{{lock}}" preview="{{true}}" />
 <float-bar />
 

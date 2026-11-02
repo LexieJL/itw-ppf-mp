@@ -7,3 +7,10 @@
 .link { color: #3a6fd8; text-decoration: underline; margin: 0 4rpx; }
 .btn { margin-top: 40rpx; background: #8A1538; color: #fff; border-radius: 999rpx; height: 80rpx; line-height: 80rpx; font-size: 28rpx; }
 .later { margin-top: 20rpx; color: #999; font-size: 26rpx; }
+
+
+.preview-mask { top: auto; bottom: 0; height: 38vh; padding: 80rpx 32rpx 24rpx; box-sizing: border-box; align-items: flex-end; background: linear-gradient(to bottom, transparent, #f6f6f8 28%); }
+.preview-mask .dialog { width: 100%; padding: 32rpx; box-sizing: border-box; box-shadow: 0 8rpx 40rpx rgba(0,0,0,.06); }
+.preview-mask .text { font-size: 30rpx; }
+.preview-mask .btn { margin-top: 24rpx; }
+.peek-caption { font-size: 24rpx; color: #888; margin-bottom: 12rpx; }

@@ -1,14 +1,14 @@
 <view class="breadcrumb">{{crumb}}</view>
 <view class="container">
-  <view class="card card-pad">
+  <view wx:if="{{!restricted}}" class="card card-pad">
     <view class="title">{{app.name}}</view>
     <view class="desc">{{restricted ? publicSummary : app.desc}}</view>
   </view>
   <image wx:if="{{cover}}" class="card diagram app-cover" src="{{cover}}" mode="aspectFit" /><view wx:else class="card ph diagram">应用图示</view>
 
   <view wx:if="{{restricted}}" class="preview-gate">
-    <view class="preview-fade" aria-hidden="true"><view class="preview-line"></view><view class="preview-line short"></view><view class="preview-line"></view></view>
-    <view class="gate-content"><view class="gate-title">{{gate.title}}</view><view class="gate-text">{{gate.text}}</view><button class="gate-button" bindtap="unlock">{{gate.button}}</button><view class="gate-back" bindtap="backToApps">继续浏览应用</view></view>
+    <view class="teaser-copy"><view class="gate-title">{{app.name}}</view><view class="preview-fade"><view>{{publicSummary}}</view><view class="context-copy">{{publicContext}}</view></view></view>
+    <view class="gate-content"><view class="gate-text">{{gate.text}}</view><button class="gate-button" bindtap="unlock">{{gate.button}}</button><view class="gate-back" bindtap="backToApps">返回应用库</view></view>
   </view>
   <block wx:else>
 

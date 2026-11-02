@@ -1,4 +1,4 @@
-<view class="{{lock ? 'blurred' : ''}}">
+<view class="{{lock ? 'library-peek' : ''}}">
   <view class="search-box">
     <text>⌕</text>
     <input placeholder="搜索产品名称、正文、市场或行业" value="{{keyword}}" bindinput="onInput" confirm-type="search" />
@@ -55,6 +55,6 @@
     </view>
   </block>
 </view>
-<lock-mask lock="{{lock}}" />
+<lock-mask lock="{{lock}}" preview="{{true}}" />
 <float-bar />
 

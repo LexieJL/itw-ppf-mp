@@ -1,6 +1,7 @@
 // 权限遮罩：页面内容加 .blurred（高斯模糊），本组件弹出提示，点击跳转注册/认证
 Component({
   properties: {
+    preview: { type: Boolean, value: false },
     lock: { type: Object, value: null },
     closable: { type: Boolean, value: false }
   },
@@ -16,3 +17,4 @@ Component({
     }
   }
 })
+

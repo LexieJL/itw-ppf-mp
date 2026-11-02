@@ -23,7 +23,7 @@ Page({
     this.setData({
       lock:null, restricted:!allowed, gate:preview.gate(auth.getUser(),app.access),
       app:allowed?app:{id:app.id,name:app.name,access:app.access},
-      publicSummary:preview.summary(app,sub&&sub.name),cover:app.publicCoverUrl||app.mainImageUrl||'',
+      publicContext:sub&&sub.desc||'探索相关领域的应用选型与资料。', publicSummary:preview.summary(app,sub&&sub.name),cover:app.publicCoverUrl||app.mainImageUrl||'',
       videos:allowed?media.videos(app,auth.can):[],articles:allowed?media.articles(app,auth.can):[],documents:allowed?media.documents(app,auth.can):[]
     })
   },
