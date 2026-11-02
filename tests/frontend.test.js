@@ -52,3 +52,8 @@ test('dealer requires segment and brands/products independently',()=>{
  p.onIndustries({detail:{value:['traffic:0','electronics:0']}});Object.assign(p.data.form,{name:'测试',phone:'13800000000',title:'经理'});p.submit();assert.match(p.notices.at(-1).title,/品牌和产品/)
  p.data.form.brandsProducts='测试品牌 产品';p.submit();assert.equal(p.lastPayload.industrySelections.length,2)
 })
+test('supplementary product videos support multiple items, permissions and cross-section deduplication',()=>{
+ const p={videos:[{src:'https://test/main.mp4'}],additionalVideos:[{title:'施工演示',src:'https://test/a.mp4'},{title:'维护',src:'https://test/b.mp4'},{src:'https://test/main.mp4'},{src:'https://test/hidden.mp4',visible:false},{src:'https://test/private.mp4',access:'staff'}]}
+ const sections=media.productVideos(p,a=>a!=='staff')
+ assert.equal(sections.primary.length,1);assert.deepEqual(sections.additional.map(v=>v.title),['施工演示','维护'])
+})

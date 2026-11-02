@@ -19,4 +19,11 @@ function articles(item,can=()=>true) {
  return rows.filter(r=>typeof r==='object').map((r,i)=>({...r,id:r.id||'article-'+i,url:urls(r.externalUrl||r.resourceFileUrl||r.url)[0]||''}))
 }
 function documents(item,can=()=>true) {return (item.resources||[]).filter(r=>['single_page','document','doc','pdf'].includes(r.kind)&&r.visible!==false&&can(r.access)).map((r,i)=>({...r,id:r.id||'doc-'+i,url:urls(r.resourceFileUrl||r.externalUrl||r.url)[0]||''}))}
-module.exports={urls,videos,articles,documents}
+// 产品主视频与正文末尾的补充视频分开配置，两个区域不重复播放同一地址。
+function productVideos(item,can=()=>true) {
+ const primary=videos(item,can)
+ const existing=new Set(primary.map(v=>v.src))
+ const additional=videos({videos:item.additionalVideos||[]},can).filter(v=>!existing.has(v.src))
+ return {primary,additional}
+}
+module.exports={urls,videos,articles,documents,productVideos}

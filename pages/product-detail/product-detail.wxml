@@ -34,6 +34,10 @@
     <view class="section-title">产品视频</view>
     <view class="card" wx:for="{{videos}}" wx:key="id"><video class="media-video" src="{{item.src}}" poster="{{item.poster}}" controls binderror="onVideoError" /><view class="card-pad">{{item.title}}</view></view>
   </block>
+  <view wx:if="{{!lock}}" class="card supplementary-videos">
+    <view class="card-pad"><view class="sub-t first">更多视频资料</view><view wx:if="{{!additionalVideos.length}}" class="muted">暂无更多视频资料</view></view>
+    <view wx:for="{{additionalVideos}}" wx:key="id"><video class="media-video" src="{{item.src}}" poster="{{item.poster}}" controls binderror="onVideoError" /><view class="card-pad">{{item.title}}</view></view>
+  </view>
 </view>
 <action-bar wx:if="{{!lock}}" item="{{favItem}}" consult="{{consultUrl}}" />
 <lock-mask lock="{{lock}}" />

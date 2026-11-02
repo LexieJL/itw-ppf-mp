@@ -50,3 +50,9 @@ test('cloud resource loading reads every page and keeps all video URLs',async()=
  api.S.user={role:'certified'};const html=api.PAGES['app-detail'].render({},{id:'live-app'})
  assert.equal((html.match(/<video /g)||[]).length,204)
 })
+test('old inline consultation position now renders additional video area including empty state',()=>{
+ const {api}=loadPreview();api.S.user={role:'member'};const p=api.PRODUCTS[0]
+ const empty=api.PAGES['product-detail'].render({},{id:p.id});assert.match(empty,/更多视频资料/);assert.match(empty,/暂无更多视频资料/);assert(!empty.includes('data-go="inquiry"'))
+ p.additionalVideos=[{title:'施工演示',src:'https://test/a.mp4'},{title:'维护说明',src:'https://test/b.mp4'}]
+ const html=api.PAGES['product-detail'].render({},{id:p.id});assert.equal((html.match(/<video /g)||[]).length,2);assert.match(html,/施工演示/);assert(!html.includes('暂无更多视频资料'))
+})

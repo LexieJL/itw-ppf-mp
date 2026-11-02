@@ -466,7 +466,14 @@ function articles(item,can=()=>true) {
  return rows.filter(r=>typeof r==='object').map((r,i)=>({...r,id:r.id||'article-'+i,url:urls(r.externalUrl||r.resourceFileUrl||r.url)[0]||''}))
 }
 function documents(item,can=()=>true) {return (item.resources||[]).filter(r=>['single_page','document','doc','pdf'].includes(r.kind)&&r.visible!==false&&can(r.access)).map((r,i)=>({...r,id:r.id||'doc-'+i,url:urls(r.resourceFileUrl||r.externalUrl||r.url)[0]||''}))}
-module.exports={urls,videos,articles,documents}
+// 产品主视频与正文末尾的补充视频分开配置，两个区域不重复播放同一地址。
+function productVideos(item,can=()=>true) {
+ const primary=videos(item,can)
+ const existing=new Set(primary.map(v=>v.src))
+ const additional=videos({videos:item.additionalVideos||[]},can).filter(v=>!existing.has(v.src))
+ return {primary,additional}
+}
+module.exports={urls,videos,articles,documents,productVideos}
 
 window.ITW_FRONTEND.resources = module.exports; }
 { const module = {exports:{}};
@@ -1229,7 +1236,8 @@ const mediaFileIds = [
             ${p.usage ? `<div class="pst">使用方法和用途</div>${txt(p.usage)}` : ''}</div>
           <div class="card cp"><div class="pst" style="margin-top:0">代码与规格</div><div class="spec mut"><span>产品代码</span><span>包装规格</span></div>${p.skus.map(x => `<div class="spec"><span>${esc(x.code || '-')}</span><span>${esc(x.size || '-')}</span></div>`).join('')}</div>
           <div class="card cp"><div class="pst" style="margin-top:0">适用市场与领域</div><div style="display:flex;flex-wrap:wrap;gap:6px">${p.markets.map(m => `<span class="ptag mk">${esc(m)}</span>`).join('')}${p.fields.map(m => `<span class="ptag">${esc(m)}</span>`).join('')}</div></div>
-          ${can(p.access)?videoHtml(media.videos(p,can),'产品视频'):''}
+          ${can(p.access)?videoHtml(media.productVideos(p,can).primary,'产品视频'):''}
+          ${can(p.access)?`<div class="card cp supplementary-videos"><div class="pst" style="margin-top:0">更多视频资料</div>${media.productVideos(p,can).additional.length?videoHtml(media.productVideos(p,can).additional,''):'<div class="mut">暂无更多视频资料</div>'}</div>`:''}
         </div>`;
       }, actionBar: true },
 
@@ -1437,7 +1445,7 @@ const mediaFileIds = [
   // 测试阶段提交认证后直接成为认证会员；上线前改为 false，恢复“审核中”流程
   const AUTO_CERTIFY = true;
   function videoHtml(items,title) {
-    return items.length ? `<div class="st">${title}</div>${items.map(v=>`<div class="card"><video class="app-video" src="${esc(v.src)}" ${v.poster?`poster="${esc(v.poster)}"`:''} controls playsinline preload="metadata"></video><div class="cp">${esc(v.title)}</div></div>`).join('')}` : '';
+    return items.length ? `${title ? `<div class="st">${title}</div>` : ''}${items.map(v=>`<div class="card"><video class="app-video" src="${esc(v.src)}" ${v.poster?`poster="${esc(v.poster)}"`:''} controls playsinline preload="metadata"></video><div class="cp">${esc(v.title)}</div></div>`).join('')}` : '';
   }
   function marketMultiHtml(value) {
     const ids=(value||[]).map(v=>typeof v==='string'?v:v.segmentId);
