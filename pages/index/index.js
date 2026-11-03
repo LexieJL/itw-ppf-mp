@@ -8,7 +8,7 @@ Page({
 
   onShow() {
     this.setData({
-      role: auth.getUser().role,
+      role: auth.getUser().role, lock: null,
       banners: cms.HOME.banners,
       modules: cms.homeModules().map(m => Object.assign({}, m, { locked: !auth.can(m.access) }))
     })
@@ -18,7 +18,8 @@ Page({
 
   onModule(e) {
     const m = this.data.modules[e.currentTarget.dataset.i]
-    // 除“工业电商”等公开模块外，游客点击任意模块：界面高斯模糊 + 要求注册
+    // 两个内容库先进入对应页面，统一展示局部预览和居中注册卡片。
+    if (['apps','products'].includes(m.key)) return link.open(m.link)
     if (m.locked) return this.setData({ lock: auth.lockFor(m.access) })
     link.open(m.link)
   },

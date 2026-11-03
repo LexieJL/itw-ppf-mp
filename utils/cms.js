@@ -16,7 +16,7 @@ const HOME = {
     { key: 'kb', name: '专属知识库', sub: '公司介绍 · 产品培训', icon: 'kb', color: '#5b1830', tint: '#f2e6ea', access: 'registered', visible: true, link: { type: 'page', url: '/pages/kb/kb' } },
     { key: 'inquiry', name: '需求咨询', sub: '样品 · 上门 · 问询', icon: 'inquiry', color: '#c2185b', tint: '#fbe7ef', access: 'registered', visible: true, link: { type: 'page', url: '/pages/inquiry/inquiry' } },
     { key: 'dealer', name: '成为经销商', sub: '提交代理申请', icon: 'dealer', color: '#7b3f55', tint: '#f3e9ed', access: 'registered', visible: true, link: { type: 'page', url: '/pages/dealer/dealer' } },
-    // 工业电商：ITW 提供的京东、天猫店铺链接（ITW外部链接.docx），汇总在通用页 mall
+    // 工业电商：首页改为乐语小程序，AppID/path 待提供；旧商城配置仅为历史通用页。
     { key: 'mall', name: '工业电商', sub: '在线选购', icon: 'mall', color: '#2e7d32', tint: '#e7f3e8', access: 'public', visible: true, badge: '乐语小程序', badgeType: 'ext', link: { type: 'miniprogram', name: '乐语小程序', appId: '', path: '' } },
     // 以下两个是 PPT 首页第二屏“未来可以增加更多模块”的示例
     { key: 'faq', name: '常见问题库', sub: '检索 · 分类 · 提问', icon: 'faq', color: '#6d4c41', tint: '#f1ebe8', access: 'registered', visible: true, badge: '新增示例', badgeType: 'new', link: { type: 'page', url: '/pages/faq/faq' } },

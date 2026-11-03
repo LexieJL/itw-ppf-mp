@@ -11,10 +11,11 @@ function search(data,keyword) {
  const context=x=>{const ind=x.ind||(data.INDUSTRIES||[]).find(i=>i.id===x.industryId); const sub=x.sub||(ind&&ind.subs.find(s=>s.id===x.subId));return [ind&&ind.name,sub&&sub.name].filter(Boolean).join(' > ')}
  ;(data.PRODUCTS||[]).forEach(p=>add(0,p,productText(p,(data.BRANDS||[]).find(b=>b.id===p.brand)),p.name,[p.brandName,p.series].join(' > '),'product-detail'))
  ;(data.APPS||[]).forEach(a=>{
-  const c=context(a);add(1,a,[c,a.name,a.desc,a.summary,a.content],a.name,c,'app-detail')
-  const resources=(a.resources||[]).filter(r=>r.visible!==false)
-  const articleRows=resources.some(r=>r.kind==='article')?resources.filter(r=>r.kind==='article'):(a.articles||[])
-  articleRows.forEach(r=>{if(typeof r==='string')r={title:r};add(2,r,[c,r.title,r.summary,r.content],r.title,c,'app-detail',a.id,stricter(a.access,r.access))})
+  const c=context(a);add(1,a,[c,a.name,a.desc,a.summary,a.publicSummary,a.content],a.name,c,'app-detail')
+  const allResources=a.resources||[]
+  const resources=allResources.filter(r=>r.visible!==false)
+  const articleRows=allResources.some(r=>r.kind==='article')?resources.filter(r=>r.kind==='article'):(a.articles||[])
+  articleRows.forEach(r=>{if(typeof r==='string')r={title:r};if(r.visible===false)return;add(2,r,[c,r.title,r.summary,r.content],r.title,c,'app-detail',a.id,stricter(a.access,r.access))})
   resources.filter(r=>['video','document','doc','pdf','single_page'].includes(r.kind)).forEach(r=>add(r.kind==='video'?3:4,r,[c,r.title,r.summary,r.content],r.title,c,'app-detail',a.id,stricter(a.access,r.access)))
  })
  ;(data.VIDEOS||[]).forEach(v=>add(3,v,[context(v),v.title,v.kind,v.desc,v.summary,v.content],v.title,context(v),'kb-video'))

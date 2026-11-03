@@ -82,3 +82,13 @@ test('both library entry gates reveal sharp content and retain registration acti
  assert(!elements.get('overlay').innerHTML.includes('library-mask'));
  }
 })
+
+test('home product and application modules reach centered preview gate',async()=>{
+ const {api,events,elements}=loadPreview();api.S.user={role:'guest'}
+ for(const k of ['apps','products']){api.go('index');const target={dataset:{act:'module',k}};await events.click[0]({target:{closest:()=>target}});assert.equal(api.S.stack.at(-1).page,k);assert.match(elements.get('overlay').innerHTML,/library-mask/);assert.equal(api.S.lock,null)}
+})
+test('web application resources exclude hidden and staff-only articles and files',()=>{
+ const {api}=loadPreview();api.S.user={role:'certified'};const a=api.APPS[0]
+ a.articles=['旧推文'];a.resources=[{kind:'article',title:'隐藏推文',visible:false,externalUrl:'https://test/hidden'},{kind:'document',title:'隐藏文档',visible:false,resourceFileUrl:'https://test/hidden.pdf'},{kind:'article',title:'员工推文',access:'staff',externalUrl:'https://test/staff'},{kind:'article',title:'有效推文',externalUrl:'https://test/public'}]
+ const html=api.PAGES['app-detail'].render({},{id:a.id});assert.match(html,/有效推文/);for(const value of ['隐藏推文','隐藏文档','员工推文','旧推文','https://test/hidden','https://test/staff'])assert(!html.includes(value))
+})

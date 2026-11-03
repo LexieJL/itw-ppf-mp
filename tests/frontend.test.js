@@ -71,3 +71,18 @@ test('native application preview strips restricted content and refreshes after a
  user.certStatus='pending';p.onShow();assert.equal(p.data.gate.page,'member')
  user.role='certified';user.certStatus='';p.onShow();assert.equal(p.data.restricted,false);assert.equal(p.data.app.desc,data.APPS[0].desc)
 })
+
+test('home library entries navigate to preview and clear old modal after returning',()=>{
+ const p=page('index',{role:'guest'}),tabs=[];global.wx.switchTab=o=>tabs.push(o.url);p.onShow()
+ for(const key of ['apps','products']){const i=p.data.modules.findIndex(m=>m.key===key);p.onModule({currentTarget:{dataset:{i}}});assert.equal(p.data.lock,null);assert.equal(tabs.at(-1),'/pages/'+key+'/'+key)}
+ const i=p.data.modules.findIndex(m=>m.key==='inquiry');p.onModule({currentTarget:{dataset:{i}}});assert(p.data.lock);p.onShow();assert.equal(p.data.lock,null)
+})
+test('article visibility is consistent across legacy rows, resource rows and search',()=>{
+ const can=a=>a!=='staff';const app={id:'a',access:'certified',articles:['旧推文',{title:'隐藏推文',visible:false},{title:'员工推文',access:'staff'}]}
+ assert.deepEqual(media.articles(app,can).map(a=>a.title),['旧推文'])
+ app.resources=[{kind:'article',title:'已下架推文',visible:false}]
+ assert.deepEqual(media.articles(app,can),[]);assert.equal(engine.search({APPS:[app]},'推文')[2].count,0)
+ app.resources=[{kind:'article',title:'公开推文',externalUrl:'https://test/article'}]
+ assert.equal(media.articles(app,can)[0].url,'https://test/article')
+ assert.equal(engine.search({APPS:[{id:'b',name:'应用',publicSummary:'公开关键词'}]},'公开关键词')[1].count,1)
+})

@@ -473,9 +473,9 @@ function videos(item,can=()=>true) {
  const seen=new Set();return rows.filter(r=>{if(seen.has(r.src))return false;seen.add(r.src);return true}).map((r,i)=>({...r,id:r.id+'-'+i}))
 }
 function articles(item,can=()=>true) {
- const resources=(item.resources||[]).filter(r=>r.kind==='article'&&r.visible!==false&&can(r.access))
+ const resources=(item.resources||[]).filter(r=>r.kind==='article')
  const rows=resources.length?resources:(item.articles||[])
- return rows.filter(r=>typeof r==='object').map((r,i)=>({...r,id:r.id||'article-'+i,url:urls(r.externalUrl||r.resourceFileUrl||r.url)[0]||''}))
+ return rows.map(r=>typeof r==='string'?{title:r}:r).filter(r=>r&&r.visible!==false&&can(r.access)).map((r,i)=>({...r,id:r.id||'article-'+i,url:urls(r.externalUrl||r.resourceFileUrl||r.url)[0]||''}))
 }
 function documents(item,can=()=>true) {return (item.resources||[]).filter(r=>['single_page','document','doc','pdf'].includes(r.kind)&&r.visible!==false&&can(r.access)).map((r,i)=>({...r,id:r.id||'doc-'+i,url:urls(r.resourceFileUrl||r.externalUrl||r.url)[0]||''}))}
 // 产品主视频与正文末尾的补充视频分开配置，两个区域不重复播放同一地址。
@@ -502,10 +502,11 @@ function search(data,keyword) {
  const context=x=>{const ind=x.ind||(data.INDUSTRIES||[]).find(i=>i.id===x.industryId); const sub=x.sub||(ind&&ind.subs.find(s=>s.id===x.subId));return [ind&&ind.name,sub&&sub.name].filter(Boolean).join(' > ')}
  ;(data.PRODUCTS||[]).forEach(p=>add(0,p,productText(p,(data.BRANDS||[]).find(b=>b.id===p.brand)),p.name,[p.brandName,p.series].join(' > '),'product-detail'))
  ;(data.APPS||[]).forEach(a=>{
-  const c=context(a);add(1,a,[c,a.name,a.desc,a.summary,a.content],a.name,c,'app-detail')
-  const resources=(a.resources||[]).filter(r=>r.visible!==false)
-  const articleRows=resources.some(r=>r.kind==='article')?resources.filter(r=>r.kind==='article'):(a.articles||[])
-  articleRows.forEach(r=>{if(typeof r==='string')r={title:r};add(2,r,[c,r.title,r.summary,r.content],r.title,c,'app-detail',a.id,stricter(a.access,r.access))})
+  const c=context(a);add(1,a,[c,a.name,a.desc,a.summary,a.publicSummary,a.content],a.name,c,'app-detail')
+  const allResources=a.resources||[]
+  const resources=allResources.filter(r=>r.visible!==false)
+  const articleRows=allResources.some(r=>r.kind==='article')?resources.filter(r=>r.kind==='article'):(a.articles||[])
+  articleRows.forEach(r=>{if(typeof r==='string')r={title:r};if(r.visible===false)return;add(2,r,[c,r.title,r.summary,r.content],r.title,c,'app-detail',a.id,stricter(a.access,r.access))})
   resources.filter(r=>['video','document','doc','pdf','single_page'].includes(r.kind)).forEach(r=>add(r.kind==='video'?3:4,r,[c,r.title,r.summary,r.content],r.title,c,'app-detail',a.id,stricter(a.access,r.access)))
  })
  ;(data.VIDEOS||[]).forEach(v=>add(3,v,[context(v),v.title,v.kind,v.desc,v.summary,v.content],v.title,context(v),'kb-video'))
@@ -536,7 +537,7 @@ const HOME = {
     { key: 'kb', name: '专属知识库', sub: '公司介绍 · 产品培训', icon: 'kb', color: '#5b1830', tint: '#f2e6ea', access: 'registered', visible: true, link: { type: 'page', url: '/pages/kb/kb' } },
     { key: 'inquiry', name: '需求咨询', sub: '样品 · 上门 · 问询', icon: 'inquiry', color: '#c2185b', tint: '#fbe7ef', access: 'registered', visible: true, link: { type: 'page', url: '/pages/inquiry/inquiry' } },
     { key: 'dealer', name: '成为经销商', sub: '提交代理申请', icon: 'dealer', color: '#7b3f55', tint: '#f3e9ed', access: 'registered', visible: true, link: { type: 'page', url: '/pages/dealer/dealer' } },
-    // 工业电商：ITW 提供的京东、天猫店铺链接（ITW外部链接.docx），汇总在通用页 mall
+    // 工业电商：首页改为乐语小程序，AppID/path 待提供；旧商城配置仅为历史通用页。
     { key: 'mall', name: '工业电商', sub: '在线选购', icon: 'mall', color: '#2e7d32', tint: '#e7f3e8', access: 'public', visible: true, badge: '乐语小程序', badgeType: 'ext', link: { type: 'miniprogram', name: '乐语小程序', appId: '', path: '' } },
     // 以下两个是 PPT 首页第二屏“未来可以增加更多模块”的示例
     { key: 'faq', name: '常见问题库', sub: '检索 · 分类 · 提问', icon: 'faq', color: '#6d4c41', tint: '#f1ebe8', access: 'registered', visible: true, badge: '新增示例', badgeType: 'new', link: { type: 'page', url: '/pages/faq/faq' } },
@@ -1133,50 +1134,8 @@ const mediaFileIds = [
           return `<div class="crumb">${esc(crumb)}</div><div class="pad"><div class="preview-gate"><div class="card ph app-main-media">${cover?`<img class="media-img" src="${esc(cover)}" alt="${esc(a.name)}">`:'应用图示'}</div><div class="teaser-copy"><div class="preview-title">${esc(a.name)}</div><div class="preview-fade"><p>${esc(appPreview.summary(a,a.sub.name))}</p><p>${esc(a.sub.desc||('探索'+a.sub.name+'领域的应用选型与相关资料。'))}</p></div></div><div class="gate-content"><div class="gate-note">${esc(gate.text)}</div><button class="btnp" data-go="${gate.page||'register'}" ${gate.role?`data-q='{"role":"${gate.role}"}'`:''}>${esc(gate.button)}</button><button class="gate-back" data-go="apps">返回应用库</button></div></div></div>`;
         }
 
-        const resources = (a.resources || []).filter(
-          resource =>
-            !resource.access ||
-            NEED[resource.access] == null ||
-            can(resource.access)
-        );
-
-        const articleResources = resources.filter(
-          resource => resource.kind === 'article'
-        );
-
-        const articleHtml = articleResources.length
-          ? articleResources
-              .map(
-                resource =>
-                  `<div class="art" data-act="resource" data-url="${esc(
-                    resource.externalUrl || media.urls(resource.resourceFileUrl)[0] || ''
-                  )}">
-                    <div class="ph">
-                      ${
-                        resource.coverImageUrl
-                          ? `<img class="media-img" src="${esc(
-                              resource.coverImageUrl
-                            )}" alt="${esc(
-                              resource.title
-                            )}" loading="lazy">`
-                          : '推文封面'
-                      }
-                    </div>
-                    <div>${esc(resource.title)}</div>
-                  </div>`
-              )
-              .join('')
-          : (a.articles || [])
-              .map(
-                title =>
-                  `<div class="art" data-act="article" data-t="${esc(
-                    title
-                  )}">
-                    <div class="ph">推文封面</div>
-                    <div>${esc(title)}</div>
-                  </div>`
-              )
-              .join('');
+        const resources = (a.resources || []).filter(resource => resource.visible !== false && can(resource.access));
+        const articleHtml = media.articles(a,can).map(resource => `<div class="art" data-act="resource" data-url="${esc(resource.url)}"><div class="ph">${resource.coverImageUrl ? `<img class="media-img" src="${esc(resource.coverImageUrl)}" alt="${esc(resource.title)}" loading="lazy">` : '推文封面'}</div><div>${esc(resource.title)}</div></div>`).join('');
 
         const appVideos = media.videos({...a,resources},can);
         const fileResources = resources.filter(
@@ -1618,7 +1577,7 @@ const mediaFileIds = [
 }
       case 'module': {
         const m=homeConfig.homeModules().find(m=>m.key===d.k);if(!m)return;
-        if(!can(m.access)){S.lock=lockFor(m.access);S.lockClosable=true;return render();}
+        if(!['apps','products'].includes(m.key)&&!can(m.access)){S.lock=lockFor(m.access);S.lockClosable=true;return render();}
         const link=m.link||{};
         if(link.type==='miniprogram')return modal('乐语小程序',link.appId?'请在微信小程序中打开工业电商入口。':'乐语小程序暂未开放，待提供目标小程序信息后启用。');
         if(link.type==='custom')return go('custom',{id:link.id});
@@ -1745,7 +1704,7 @@ const mediaFileIds = [
       if (!/^1\d{10}$/.test(v('phone'))) return err('手机号格式不正确');
       if (!/^\S+@\S+\.\S+$/.test(v('email')))return err('邮箱格式不正确');
       if (!fd.get('agree')) return err('请先同意使用条例和隐私权声明');
-      cur().ps.lastPayload={...Object.fromEntries(fd),...market,type:['sample','visit','general'][tab]};
+      cur().ps.lastPayload={...Object.fromEntries(fd),...market,type:['sample','visit','general'][tab],productId:v('product'),applicationId:v('app')};
       return modal('表单校验通过', '当前为前端演示，咨询尚未发送，也未通知销售。正式提交待后台接口接入。');
     }
   });

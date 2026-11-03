@@ -14,9 +14,9 @@ function videos(item,can=()=>true) {
  const seen=new Set();return rows.filter(r=>{if(seen.has(r.src))return false;seen.add(r.src);return true}).map((r,i)=>({...r,id:r.id+'-'+i}))
 }
 function articles(item,can=()=>true) {
- const resources=(item.resources||[]).filter(r=>r.kind==='article'&&r.visible!==false&&can(r.access))
+ const resources=(item.resources||[]).filter(r=>r.kind==='article')
  const rows=resources.length?resources:(item.articles||[])
- return rows.filter(r=>typeof r==='object').map((r,i)=>({...r,id:r.id||'article-'+i,url:urls(r.externalUrl||r.resourceFileUrl||r.url)[0]||''}))
+ return rows.map(r=>typeof r==='string'?{title:r}:r).filter(r=>r&&r.visible!==false&&can(r.access)).map((r,i)=>({...r,id:r.id||'article-'+i,url:urls(r.externalUrl||r.resourceFileUrl||r.url)[0]||''}))
 }
 function documents(item,can=()=>true) {return (item.resources||[]).filter(r=>['single_page','document','doc','pdf'].includes(r.kind)&&r.visible!==false&&can(r.access)).map((r,i)=>({...r,id:r.id||'doc-'+i,url:urls(r.resourceFileUrl||r.externalUrl||r.url)[0]||''}))}
 // 产品主视频与正文末尾的补充视频分开配置，两个区域不重复播放同一地址。
